@@ -1,4 +1,4 @@
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 //import jwt_decode from "jwt-decode";
 import axios from "axios";
@@ -10,6 +10,7 @@ function ProtectedRoute({ children }) {
   const {authorized, token} = useSelector((state) => (state.auth));
   axios.defaults.baseURL = "http://localhost:8070/";
   axios.defaults.headers.common["Authorization"] = `Bearer ${token ?? ""}`;
+
   if (token!=="") {
     dispatch(setAuthorized(true));
   }
@@ -23,6 +24,9 @@ function ProtectedRoute({ children }) {
   ) : (
     <Navigate to="/login" replace />
   );
+}
+
+export default ProtectedRoute;
   // const store = useStore();
   // const token = store.getState().auth.token;
   // const [userRole, setUserRole] = useState(role);
@@ -56,6 +60,4 @@ function ProtectedRoute({ children }) {
   //   return <div>403</div>;
   // }
   // return children;
-}
 
-export default ProtectedRoute;

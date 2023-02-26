@@ -21,10 +21,16 @@ const initialState = {
       },
       setAuthorized: (state, action)=>{
         state.authorized = action.payload
+      },
+      setToken: (state, action) =>{
+        state.token =action.payload
+        if(state.token ===""){
+          state.authorized = false
+        }
       }
     }
   }
 );
-  export const { setLoginInfo, logOut, setAuthorized } = authSlice.actions;
+  export const { setLoginInfo, logOut, setAuthorized, setToken } = authSlice.actions;
   export default authSlice.reducer;
 

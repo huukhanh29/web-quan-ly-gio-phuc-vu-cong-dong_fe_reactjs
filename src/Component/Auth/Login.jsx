@@ -23,7 +23,6 @@ function Login() {
     }),
     onSubmit: (data) => {
       // console.log(data);
-
       axios({
         method: "POST",
         url: "http://localhost:8070/auth/signin",

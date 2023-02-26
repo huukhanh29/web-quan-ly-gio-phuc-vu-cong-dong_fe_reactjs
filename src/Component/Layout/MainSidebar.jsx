@@ -1,4 +1,5 @@
-import { faComment, faHome, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
+import { faComment, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Sidebar } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
@@ -29,13 +30,24 @@ const activeClassname= 'bg-gradient-to-r from-green-300 to-blue-400'
             <Sidebar.Item
               key={"feeback"}
               as={Link}
-              to={"/user/feedback"}
+              to={"/user/send-feedback"}
               className={
-                '/user/feedback'=== pathname ? activeClassname: ''
+                '/user/send-feedback'=== pathname ? activeClassname: ''
               }
               icon={() => <FontAwesomeIcon icon={faComment} />}
             >
-              Feedback Chatbot
+              Feedback Send
+            </Sidebar.Item>
+            <Sidebar.Item
+              key={"feebackTable"}
+              as={Link}
+              to={"/user/list-feedback"}
+              className={
+                '/user/list-feedback'=== pathname ? activeClassname: ''
+              }
+              icon={() => <FontAwesomeIcon icon={faStackExchange} />}
+            >
+              Feedback List
             </Sidebar.Item>
           </Sidebar.ItemGroup>
         </Sidebar.Items>

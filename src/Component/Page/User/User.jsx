@@ -8,6 +8,7 @@ import MessageParser from "./BotChat/MessageParser";
 import "react-chatbot-kit/build/main.css";
 import { ReactComponent as ButtonIcon } from "./BotChat/robot.svg";
 import { Avatar } from "flowbite-react";
+import avatarUser from "./BotChat/bot.jpg"
 export default function User() {
   const [showChatbot, toggleChatbot] = useState(false);
   return (
@@ -31,6 +32,7 @@ export default function User() {
           <ButtonIcon className="app-chatbot-button-icon" />
         </button>
       </div>
+      
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-8">
           <div className="flex items-center justify-center">
@@ -39,7 +41,7 @@ export default function User() {
                 <Avatar
                 className="shadow-md shadow-black rounded-full bg-cyan-300"
                   alt="Default avatar with alt text"
-                  img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                  img={avatarUser}
                   rounded={true}
                   size="xl"
                   bordered={true}
