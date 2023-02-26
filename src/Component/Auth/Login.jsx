@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { setLoginInfo } from "../../store/authSlice";
+import { setAuthorized, setLoginInfo } from "../../store/authSlice";
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ function Login() {
 
       axios({
         method: "POST",
-        url: "auth/signin",
+        url: "http://localhost:8070/auth/signin",
         data: data,
       })
         .then(function (res) {
@@ -39,6 +39,9 @@ function Login() {
                 token: res.data.token,
               })
             );
+            dispatch(
+              setAuthorized(true)
+            );
             navigate("/user");
             //console.log(res.data)
           } else {
@@ -50,10 +53,16 @@ function Login() {
                 token: res.data.token,
               })
             );
+            dispatch(
+              setAuthorized(true)
+            )
             navigate("/admin");
           }
         })
         .catch(function (res) {
+          dispatch(
+            setAuthorized(false)
+          )
           console.log(res);
         });
     },

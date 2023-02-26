@@ -13,7 +13,7 @@ const config = {
       backgroundColor: '#0000FF', //xạnh
     },
     chatButton: { //màu nút chát
-      backgroundColor: '#FF0000', //đỏ
+      backgroundColor: 'blue', //đỏ
     }
   },
   customComponents: {

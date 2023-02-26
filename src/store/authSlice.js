@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     role: "",
     username: "",
-    token:""
+    token:"",
+    authorized:false
   };
   export const authSlice = createSlice({
     name: "auth",  // Tên của slice, mỗi slice đặt 1 tên khác nhau để phân biệt
@@ -17,10 +18,13 @@ const initialState = {
         state.username = "";
         state.role = "";
         state.token= ""
+      },
+      setAuthorized: (state, action)=>{
+        state.authorized = action.payload
       }
     }
   }
 );
-  export const { setLoginInfo, logOut } = authSlice.actions;
+  export const { setLoginInfo, logOut, setAuthorized } = authSlice.actions;
   export default authSlice.reducer;
 
