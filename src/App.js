@@ -11,6 +11,7 @@ import ListFeedback from './Component/Page/Student/FeedBack/ListFeedback';
 import Lecturer from './Component/Page/Lecturer/Lecturer';
 import Student from './Component/Page/Student/Student';
 import Page403 from './Component/Page/403/403';
+import ListFaq from './Component/Page/Admin/Faq/ListFaq';
 
 function App() {
   const router = createBrowserRouter([
@@ -41,6 +42,22 @@ function App() {
             {
               path: 'list-feedback',
               element: <ListFeedback />
+            }
+          ]
+        },
+        {
+          path: '/admin',
+          element: <ProtectedAuthRoute role="ADMIN">
+            <Outlet />
+          </ProtectedAuthRoute>,
+          children:[
+            {
+              path: '',
+              element: <Admin/>
+            },
+            {
+              path: 'list-faq',
+              element: <ListFaq />
             }
           ]
         },

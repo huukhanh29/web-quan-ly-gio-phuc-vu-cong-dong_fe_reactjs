@@ -16,8 +16,8 @@ export default function Admin() {
       if (token) {
         try {
           const response = await axios.get(`/user/get/${id}`);
-          const user = response;
-          console.log(user);
+          //const user = response;
+          //console.log(user);
         } catch (error) {
           if (error.response.status === 403) {
             dispatch(logOut())

@@ -3,7 +3,8 @@ const initialState = {
     role: "",
     username: "",
     token:"",
-    authorized:false
+    authorized:false,
+    sidebar:true
   };
   export const authSlice = createSlice({
     name: "auth",  // Tên của slice, mỗi slice đặt 1 tên khác nhau để phân biệt
@@ -27,10 +28,13 @@ const initialState = {
         if(state.token ===""){
           state.authorized = false
         }
+      },
+      setSidebar:(state)=>{
+        state.sidebar = !state.sidebar;
       }
     }
   }
 );
-  export const { setLoginInfo, logOut, setAuthorized, setToken } = authSlice.actions;
+  export const { setLoginInfo, logOut, setAuthorized, setToken, setSidebar } = authSlice.actions;
   export default authSlice.reducer;
 

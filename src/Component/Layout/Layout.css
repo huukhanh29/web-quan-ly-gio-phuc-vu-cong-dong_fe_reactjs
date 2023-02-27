@@ -1,0 +1,16 @@
+.thanhben {
+    width: 200px;
+    height: 100vh;
+    background-color: gray;
+    float: left;
+  }
+  
+  .an {
+    display: none;
+  }
+  
+  .noidung {
+    margin-left: 220px;
+    padding: 20px;
+  }
+  

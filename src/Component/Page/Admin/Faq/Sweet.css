@@ -1,0 +1,31 @@
+.swal2-popup .swal2-textarea.form-textarea {
+    width: 100%;
+    height: 150px;
+    font-size: 16px;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  .swal2-popup .swal2-input-label {
+    display: none;
+  }
+  
+  .swal2-popup .swal2-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .swal2-popup .swal2-confirm {
+    background-color: #5cb85c;
+    color: #fff;
+    border-color: #5cb85c;
+    margin-top: 20px;
+  }
+  
+  .swal2-popup .swal2-confirm:hover {
+    background-color: #4cae4c;
+    border-color: #4cae4c;
+  }
+  

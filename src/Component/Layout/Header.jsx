@@ -1,17 +1,15 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
-import logoGuest from "./User.png"
-import logoCtu from "./ctu.ico"
+import logoGuest from "./User.png";
+import logoCtu from "./ctu.ico";
+import React from "react";
+
 export default function Header() {
   return (
     <Navbar fluid={true} rounded={true}>
-      <Navbar.Brand as={Link} to ={'/'}>
-        <img
-          src= {logoCtu}
-          className="mr-3 h-6 sm:h-9"
-          alt="CTU Logo"
-        />
+      <Navbar.Brand as={Link} to={"/"}>
+        <img src={logoCtu} className="mr-3 ml-2 h-6 sm:h-9" alt="CTU Logo" />
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
           CTU
         </span>
@@ -20,13 +18,7 @@ export default function Header() {
         <Dropdown
           arrowIcon={false}
           inline={true}
-          label={
-            <Avatar
-              alt="User settings"
-              img={logoGuest}
-              rounded={true}
-            />
-          }
+          label={<Avatar alt="User settings" img={logoGuest} rounded={true} />}
         >
           <Dropdown.Header>
             <span className="block text-sm">Hello Guest</span>
@@ -34,11 +26,17 @@ export default function Header() {
               name@flowbite.com
             </span>
           </Dropdown.Header>
-          <Dropdown.Item ><Link className="w-full" to= {'/login'}>Login</Link></Dropdown.Item>
+          <Dropdown.Item>
+            <Link className="w-full" to={"/login"}>
+              Login
+            </Link>
+          </Dropdown.Item>
           <Dropdown.Item>Settings</Dropdown.Item>
           <Dropdown.Item>Earnings</Dropdown.Item>
-          <Dropdown.Divider/>
-          <Dropdown.Item><Logout/></Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item>
+            <Logout />
+          </Dropdown.Item>
         </Dropdown>
         <Navbar.Toggle />
       </div>
