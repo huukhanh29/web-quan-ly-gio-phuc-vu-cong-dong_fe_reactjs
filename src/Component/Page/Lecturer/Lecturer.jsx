@@ -3,7 +3,7 @@ import jwtDecode from "jwt-decode";
 import { useDispatch, useStore } from "react-redux";
 import { logOut, setAuthorized } from "../../../store/authSlice";
 
-export default function Admin() {
+export default function Lecturer() {
   const store = useStore();
   let id = "0";
   const token = store.getState().auth.token;
@@ -29,7 +29,7 @@ export default function Admin() {
     fetchData()
   return (
     <div className="mt-5">
-      <h3 className="pt-5">hello admin</h3>
+      <h3 className="pt-5">hello lecturer</h3>
     </div>
   );
 }

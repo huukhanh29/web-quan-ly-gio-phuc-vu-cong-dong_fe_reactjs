@@ -9,7 +9,7 @@ import "react-chatbot-kit/build/main.css";
 import { ReactComponent as ButtonIcon } from "./BotChat/robot.svg";
 import { Avatar } from "flowbite-react";
 import avatarUser from "./BotChat/bot.jpg"
-export default function User() {
+export default function Student() {
   const [showChatbot, toggleChatbot] = useState(false);
   return (
     <div>

@@ -2,14 +2,15 @@ import './App.css';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import Root from './Component/Layout/Root';
 import Login from './Component/Auth/Login';
-import User from './Component/Page/User/User';
 import Admin from './Component/Page/Admin/Admin';
 import ProtectedRoute from './Component/Auth/ProtectedRoute';
 import Home from './Component/Page/Home';
 import ProtectedAuthRoute from './Component/Auth/ProtectedAuthRoute';
-import 
-SendFeedback from './Component/Page/User/FeedBack/SendFeedback';
-import ListFeedback from './Component/Page/User/FeedBack/ListFeedback';
+import SendFeedback from './Component/Page/Student/FeedBack/SendFeedback';
+import ListFeedback from './Component/Page/Student/FeedBack/ListFeedback';
+import Lecturer from './Component/Page/Lecturer/Lecturer';
+import Student from './Component/Page/Student/Student';
+import Page403 from './Component/Page/403/403';
 
 function App() {
   const router = createBrowserRouter([
@@ -24,14 +25,14 @@ function App() {
           element: <Home />
         },
         {
-          path: '/user',
-          element: <ProtectedAuthRoute role="USER">
+          path: '/student',
+          element: <ProtectedAuthRoute role="STUDENT">
             <Outlet />
           </ProtectedAuthRoute>,
           children:[
             {
               path: '',
-              element: <User/>
+              element: <Student/>
             },
             {
               path: 'send-feedback',
@@ -46,12 +47,20 @@ function App() {
         {
           path: '/admin',
           element: <ProtectedAuthRoute role="ADMIN"><Admin/></ProtectedAuthRoute>
+        },
+        {
+          path: '/lecturer',
+          element: <ProtectedAuthRoute role="LECTURER"><Lecturer/></ProtectedAuthRoute>
         }
       ]
     },
     {
       path: '/login',
       element: <Login />
+    },
+    {
+      path: '/403',
+      element: <Page403 />
     }
   ])
   return (

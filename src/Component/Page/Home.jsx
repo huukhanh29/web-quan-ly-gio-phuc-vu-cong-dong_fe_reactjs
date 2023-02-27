@@ -11,11 +11,15 @@ export default function Home() {
   }
   return (
     <>
-      {role === "ADMIN" ? (
+      {role === "ADMIN" && (
         <Navigate to="/admin" />
-      ) : (
-        <Navigate to="/user" />
-      )}
+      ) } 
+      {role === "STUDENT" && (
+        <Navigate to="/student" />
+      ) } 
+      {role === "LECTURER" && (
+        <Navigate to="/lecturer" />
+      ) } 
     </>
   );
 }
