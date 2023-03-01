@@ -40,7 +40,7 @@ export default function ListFeedback() {
               {item.content}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              {item.faq?.content ?? ""}
+              {item.faq?.question ?? ""}
             </Table.Cell>
           </Table.Row>
           ))}

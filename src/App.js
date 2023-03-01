@@ -12,6 +12,7 @@ import Lecturer from './Component/Page/Lecturer/Lecturer';
 import Student from './Component/Page/Student/Student';
 import Page403 from './Component/Page/403/403';
 import ListFaq from './Component/Page/Admin/Faq/ListFaq';
+import ListUser from './Component/Page/Admin/User/ListUser';
 
 function App() {
   const router = createBrowserRouter([
@@ -58,12 +59,12 @@ function App() {
             {
               path: 'list-faq',
               element: <ListFaq />
+            },
+            {
+              path: 'list-user',
+              element: <ListUser />
             }
           ]
-        },
-        {
-          path: '/admin',
-          element: <ProtectedAuthRoute role="ADMIN"><Admin/></ProtectedAuthRoute>
         },
         {
           path: '/lecturer',
