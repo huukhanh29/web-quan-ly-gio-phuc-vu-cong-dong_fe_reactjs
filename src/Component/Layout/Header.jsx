@@ -1,11 +1,19 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
-import logoGuest from "./User.png";
 import logoCtu from "./ctu.ico";
 import React from "react";
-
+import { useStore } from "react-redux";
+import jwt_decode from "jwt-decode";
 export default function Header() {
+  const store = useStore();
+  const token = store.getState().auth.token;
+  const decoded = jwt_decode(token);
+  const name = decoded.name;
+  const email = decoded.email;
+  const avatar = decoded.avatar;
+  const username = decoded.username;
+  const basUrl = "http://localhost:8070/";
   return (
     <Navbar fluid={true} rounded={true}>
       <Navbar.Brand as={Link} to={"/"}>
@@ -14,25 +22,28 @@ export default function Header() {
           CTU
         </span>
       </Navbar.Brand>
-      <div className="flex md:order-2">
+      <div className="flex md:order-2 ">
+      <span className="mr-2 mt-2 font-semibold text-md">{name}</span>
         <Dropdown
           arrowIcon={false}
           inline={true}
-          label={<Avatar alt="User settings" img={logoGuest} rounded={true} />}
+          label={
+            <Avatar
+              alt="User settings"
+              img={basUrl + "image/" + avatar}
+              rounded={true}
+            />
+          }
         >
           <Dropdown.Header>
-            <span className="block text-sm">Hello Guest</span>
-            <span className="block truncate text-sm font-medium">
-              name@flowbite.com
-            </span>
+            <span className="block text-sm">Hello {username}</span>
+            <span className="block truncate text-sm font-medium">{email}</span>
           </Dropdown.Header>
           <Dropdown.Item>
-            <Link className="w-full" to={"/login"}>
-              Login
+            <Link className="w-full" to={`/profile`}>
+              Profile
             </Link>
           </Dropdown.Item>
-          <Dropdown.Item>Settings</Dropdown.Item>
-          <Dropdown.Item>Earnings</Dropdown.Item>
           <Dropdown.Divider />
           <Dropdown.Item>
             <Logout />

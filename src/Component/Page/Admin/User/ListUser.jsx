@@ -1,4 +1,4 @@
-import { faEdit, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import {
@@ -29,6 +29,7 @@ export default function ListUser() {
   const [users, setUsers] = useState([]);
   const [sort, setSort] = useState({ sortBy: "", sortDir: "" });
   const [searchTerm, setSearchTerm] = useState("");
+  const roles = ["ADMIN", "LECTURER", "STUDENT"];
 
   const fetchData = useCallback(async () => {
     try {
@@ -150,18 +151,39 @@ export default function ListUser() {
       .post("/user/update/status", newStatus)
       .then((res) => {
         fetchData();
-        if(res.data.message === "WARNING"){
-            toast.warning("Không thay đổi trang thái")
-        }else{
-            toast.success("Cập nhật trạng thái thành công");
+        //console.log(res)
+        if (res.data.message === "WARNING") {
+
+          toast.warning("Không thay đổi");
+        } else {
+          toast.success("Cập nhật trạng thái thành công");
         }
-        
       })
       .catch((error) => {
-        if(error.response.data.message === "ERROR"){
-            toast.error("Không thể thay đổi trang thái của admin")
+        if (error.response.data.message === "ERROR") {
+          toast.error("Không thể thay đổi trang thái của admin");
         }
-          console.error(error);
+        console.error(error);
+      });
+  };
+  const handleRoleChange = (username, role) => {
+    const newRole = { username, role };
+    axios
+      .post("/user/update/role", newRole)
+      .then((res) => {
+        fetchData();
+        //console.log(res)
+        if (res.data.message === "WARNING") {
+          toast.warning("Không thay đổi");
+        } else {
+          toast.success("Cập nhật quyền thành công");
+        }
+      })
+      .catch((error) => {
+        if (error.response.data.message === "ERROR") {
+          toast.error("Không thể thay đổi quyền của admin");
+        }
+        console.error(error);
       });
   };
   return users === null ? (
@@ -286,49 +308,47 @@ export default function ListUser() {
                 {item.email}
               </Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
-                {item.role}
+                {roles.includes(item.role) && (
+                  <Dropdown
+                    label={item.role}
+                    style={{ height: "21px", width: "90px" }}
+                    color="white"
+                    
+                  >
+                    {roles.map((role, index) => (
+                      <Dropdown.Item
+                        onClick={() => handleRoleChange(item.username, role)}
+                        key ={index+1}
+                      >
+                        {role}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown>
+                )}
               </Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white text-center">
-                {item.status === 1 && (
-                  <Dropdown
-                    label="active"
-                    style={{ height: "21px", width: "80px" }}
-                    gradientDuoTone="tealToLime"
+                <Dropdown
+                  label={item.status === 1 ? "active" : "disable"}
+                  style={{ height: "21px", width: "80px" }}
+                  gradientDuoTone={
+                    item.status === 1 ? "tealToLime" : "pinkToOrange"
+                  }
+                >
+                  <Dropdown.Item
+                    onClick={() => handleStatusChange(item.username, "active")}
                   >
-                    <Dropdown.Item onClick={() => handleStatusChange(item.username,"active")}>
-                      <Badge color="success" className="flex justify-center">
-                        active
-                      </Badge>
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => handleStatusChange(item.username,"disable")}
-                    >
-                      <Badge color="failure" className="flex justify-center">
-                        disable
-                      </Badge>
-                    </Dropdown.Item>
-                  </Dropdown>
-                )}
-                {item.status === 0 && (
-                  <Dropdown
-                    label="disable"
-                    style={{ height: "21px", width: "80px" }}
-                    gradientDuoTone="pinkToOrange"
+                    <Badge color="success" className="flex justify-center">
+                      active
+                    </Badge>
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => handleStatusChange(item.username, "disable")}
                   >
-                    <Dropdown.Item onClick={() => handleStatusChange(item.username,"active")}>
-                      <Badge color="success" className="flex justify-center">
-                        active
-                      </Badge>
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => handleStatusChange(item.username,"disable")}
-                    >
-                      <Badge color="failure" className="flex justify-center">
-                        disable
-                      </Badge>
-                    </Dropdown.Item>
-                  </Dropdown>
-                )}
+                    <Badge color="failure" className="flex justify-center">
+                      disable
+                    </Badge>
+                  </Dropdown.Item>
+                </Dropdown>
               </Table.Cell>
             </Table.Row>
           ))}

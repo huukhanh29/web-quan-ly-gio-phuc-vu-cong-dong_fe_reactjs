@@ -3,7 +3,9 @@ import {
   faChevronLeft,
   faChevronRight,
   faComment,
+  faComments,
   faUser,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Sidebar } from "flowbite-react";
@@ -81,27 +83,28 @@ export default function MainSidebar() {
               {role === "ADMIN" && (
                 <>
                 <Sidebar.Item
-                  key={"chatbot"}
-                  as={Link}
-                  to={"/admin/list-faq"}
-                  className={
-                    "/admin/list-faq" === pathname ? activeClassname : ""
-                  }
-                  icon={() => <FontAwesomeIcon icon={faComment} />}
-                >
-                  Quản lý Chat
-                </Sidebar.Item>
-                <Sidebar.Item
                   key={"user"}
                   as={Link}
                   to={"/admin/list-user"}
                   className={
                     "/admin/list-user" === pathname ? activeClassname : ""
                   }
-                  icon={() => <FontAwesomeIcon icon={faComment} />}
+                  icon={() => <FontAwesomeIcon icon={faUsers} />}
                 >
                   Quản lý User
                 </Sidebar.Item>
+                <Sidebar.Item
+                  key={"chatbot"}
+                  as={Link}
+                  to={"/admin/list-faq"}
+                  className={
+                    "/admin/list-faq" === pathname ? activeClassname : ""
+                  }
+                  icon={() => <FontAwesomeIcon icon={faComments} />}
+                >
+                  Quản lý Chat
+                </Sidebar.Item>
+                
                 </>
                 
                 

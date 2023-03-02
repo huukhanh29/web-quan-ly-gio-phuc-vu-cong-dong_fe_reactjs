@@ -13,6 +13,7 @@ import Student from './Component/Page/Student/Student';
 import Page403 from './Component/Page/403/403';
 import ListFaq from './Component/Page/Admin/Faq/ListFaq';
 import ListUser from './Component/Page/Admin/User/ListUser';
+import Profile from './Component/Page/Profile';
 
 function App() {
   const router = createBrowserRouter([
@@ -69,6 +70,11 @@ function App() {
         {
           path: '/lecturer',
           element: <ProtectedAuthRoute role="LECTURER"><Lecturer/></ProtectedAuthRoute>
+        },
+        ,
+        {
+          path: '/profile',
+          element: <Profile />
         }
       ]
     },
