@@ -17,12 +17,13 @@ export default function Admin() {
         try {
           const response = await axios.get(`/user/get/${id}`);
           //const user = response;
-          //console.log(user);
+          console.log(response);
         } catch (error) {
           if (error.response.status === 403) {
-            dispatch(logOut())
+            //dispatch(logOut())
             dispatch(setAuthorized(false));
           }
+
         }
       }
     };

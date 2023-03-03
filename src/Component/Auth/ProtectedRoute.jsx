@@ -1,18 +1,22 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import { setAuthorized } from "../../store/authSlice";
+import { useEffect } from "react";
 //
 function ProtectedRoute({ children }) {
   const dispatch = useDispatch();
-  const {authorized, token} = useSelector((state) => (state.auth));
+  const {authorized} = useSelector((state) => (state.auth));
+  const token = useStore().getState().auth.token;
   axios.defaults.baseURL = "http://localhost:8070/";
   axios.defaults.headers.common["Authorization"] = `Bearer ${token ?? ""}`;
-  if (token!=="") {
-    dispatch(setAuthorized(true));
-  }
+  useEffect(() => {
+    if (token && !authorized) {
+      dispatch(setAuthorized(true));
+    }
+  }, [dispatch, token]);
   //console.log(authorized)
-  return authorized ? (
+  return authorized || token ? (
     children ? (
       children
     ) : (

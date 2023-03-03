@@ -1,20 +1,41 @@
-import { Avatar, Dropdown, Navbar } from "flowbite-react";
+import { Avatar, Dropdown, Navbar, Spinner } from "flowbite-react";
 import { Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
 import logoCtu from "./ctu.ico";
-import React from "react";
-import { useStore } from "react-redux";
+import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import jwt_decode from "jwt-decode";
+import axios from "axios";
 export default function Header() {
-  const store = useStore();
-  const token = store.getState().auth.token;
+  const {token} = useStore().getState().auth;
   const decoded = jwt_decode(token);
-  const name = decoded.name;
-  const email = decoded.email;
-  const avatar = decoded.avatar;
-  const username = decoded.username;
+  const id = decoded.id;
+  const dispatch = useDispatch();
+  const avatar = useSelector((state) => state.auth.avatar);
+  const [users, setUsers] = useState(null);
+  const fetchData = useCallback(async () => {
+    try {
+      const { data, status } = await axios.get(`/user/get/${id}`);
+      if (status === 200) {
+        setUsers(data);
+        //console.log(avatar)
+        //console.log(data)
+      }
+    } catch (error) {
+      if (error.response === 403) {
+        console.log(error.response)
+        //dispatch(setToken(""));
+      }
+    }
+  }, [ id]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
   const basUrl = "http://localhost:8070/";
-  return (
+  
+  return users === null ? (
+    <Spinner color="failure" />
+  ) : (
     <Navbar fluid={true} rounded={true}>
       <Navbar.Brand as={Link} to={"/"}>
         <img src={logoCtu} className="mr-3 ml-2 h-6 sm:h-9" alt="CTU Logo" />
@@ -23,21 +44,21 @@ export default function Header() {
         </span>
       </Navbar.Brand>
       <div className="flex md:order-2 ">
-      <span className="mr-2 mt-2 font-semibold text-md">{name}</span>
+      <span className="mr-2 mt-2 font-semibold text-md">{users.name}</span>
         <Dropdown
           arrowIcon={false}
           inline={true}
           label={
             <Avatar
               alt="User settings"
-              img={basUrl + "image/" + avatar}
+              img={basUrl + "files/" + (avatar || users.avatar)}
               rounded={true}
             />
           }
         >
           <Dropdown.Header>
-            <span className="block text-sm">Hello {username}</span>
-            <span className="block truncate text-sm font-medium">{email}</span>
+            <span className="block text-sm">Hello {users.username}</span>
+            <span className="block truncate text-sm font-medium">{users.email}</span>
           </Dropdown.Header>
           <Dropdown.Item>
             <Link className="w-full" to={`/profile`}>

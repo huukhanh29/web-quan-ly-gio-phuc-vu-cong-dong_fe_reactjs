@@ -1,0 +1,21 @@
+#cropperjs {
+    display: block;
+    max-width: 100%;
+    width: 150px;
+    height: 150px;
+    
+  }
+
+  #preview {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+    border-radius: 100%;
+  }
+  .swal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  

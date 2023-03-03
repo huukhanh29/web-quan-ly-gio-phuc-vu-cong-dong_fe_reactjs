@@ -292,7 +292,7 @@ export default function ListUser() {
               <Table.Cell>{index + 1}</Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
                 <img
-                  src={basUrl + "image/" + item.avatar}
+                  src={basUrl + "files/" + item.avatar}
                   alt="aaa"
                   width="50px"
                   height="50px"
