@@ -18,23 +18,24 @@ import { setToken } from "../../../../store/authSlice";
 import Swal from "sweetalert2";
 import "./Sweet.css";
 import { toast } from "react-toastify";
-export default function ListFaq() {
+export default function ListFeedbackAdmin() {
   const dispatch = useDispatch();
   const activeClassname = "bg-gradient-to-r from-green-300 to-blue-400";
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
+  const [feedback, setFeedbacks] = useState([]);
   const [sort, setSort] = useState({ sortBy: "", sortDir: "" });
   const [searchTerm, setSearchTerm] = useState("");
-  const [faq, setFaq] = useState([]);
   const fetchData = useCallback(async () => {
     try {
       const { data } = await axios.get(
-        `/faq/get/all?page=${currentPage}&size=${pageSize}&sortBy=${sort.sortBy}&sortDir=${sort.sortDir}&searchTerm=${searchTerm}`
+        `/feedback/get/all?page=${currentPage}&size=${pageSize}&sortBy=${sort.sortBy}&sortDir=${sort.sortDir}&searchTerm=${searchTerm}`
       );
 
-      setFaq(data.content);
+      setFeedbacks(data.content);
       setTotalPages(data.totalPages);
+      console.log(data)
     } catch (error) {
       if (error.response.status === 403) {
         dispatch(setToken(""));
@@ -43,7 +44,7 @@ export default function ListFaq() {
   }, [currentPage, dispatch, pageSize, sort, searchTerm]);
 
   useEffect(() => {
-    document.title = "Danh sách câu hỏi";
+    document.title = "Danh sách phản hồi";
     fetchData();
   }, [fetchData]);
   const handlePageSizeChange = (size) => {
@@ -69,51 +70,14 @@ export default function ListFaq() {
     setPageSize(10);
     setCurrentPage(0);
   };
-  //chỉnh sửa
-  const showFormEdit = (id) => {
-    const faqItem = faq.find((item) => item.id === id);
-    Swal.fire({
-      title: "Chỉnh sửa",
-      html: `<textarea type="text" id="question" class="swal2-textarea form-textarea " placeholder="Question">${faqItem.question}</textarea>
-      <textarea type="text" id="answer" class="swal2-textarea form-textarea" placeholder="Answer">${faqItem.answer}</textarea>`,
-      confirmButtonText: "Lưu",
-      focusConfirm: false,
-      allowOutsideClick: () => !Swal.isLoading(),
-      preConfirm: () => {
-        const question = Swal.getPopup().querySelector("#question").value;
-        const answer = Swal.getPopup().querySelector("#answer").value;
-        if (!question || !answer) {
-          Swal.showValidationMessage(`Please enter question and answer`);
-        }
-        const existingQuestion = faq.find((item) => item.question === question);
-        if (existingQuestion) {
-          Swal.showValidationMessage("Câu hỏi đã tồn tại");
-          return false;
-        }
-        return { question: question, answer: answer };
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const updatedData = result.value;
-        axios
-          .put(`/faq/update/${id}`, updatedData)
-          .then((response) => {
-            // Reload the FAQ data after updating
-            fetchData();
-            handleSortChange("updatedAt","DESC");
-            toast.success("Chỉnh sửa thành công");
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-    });
-  };
   //thêm mới
-  const showFormCreate = () => {
+  const showFormCreate = (id) => {
+    const feedbackItem = feedback.find((item) => item.id === id);
     Swal.fire({
       title: "Thêm câu hỏi mới",
-      html: `<textarea type="text" id="question" class="swal2-textarea form-textarea " placeholder="Question"></textarea>
+      html: `
+      <input type="text" id="name" class="swal2-input" value=${feedbackItem.content} disabled>
+      <textarea type="text" id="question" class="swal2-textarea form-textarea " placeholder="Question"></textarea>
       <textarea type="text" id="answer" class="swal2-textarea form-textarea" placeholder="Answer"></textarea>`,
       focusConfirm: false,
       preConfirm: () => {
@@ -125,13 +89,13 @@ export default function ListFaq() {
         }
         const newData = { question, answer };
         // Kiểm tra trùng lặp câu hỏi
-        const existingQuestion = faq.find((item) => item.question === question);
-        if (existingQuestion) {
-          Swal.showValidationMessage("Câu hỏi đã tồn tại");
-          return false;
-        }
+        // const existingQuestion = faq.find((item) => item.question === question);
+        // if (existingQuestion) {
+        //   Swal.showValidationMessage("Câu hỏi đã tồn tại");
+        //   return false;
+        // }
         axios
-          .post("/faq/create", newData)
+          .put(`/feedback/reply/${id}`, newData)
           .then((response) => {
             // Reload the FAQ data after creating
             fetchData();
@@ -139,12 +103,14 @@ export default function ListFaq() {
             toast.success("Thêm thành công");
           })
           .catch((error) => {
+            if(error.response.data.message === "Question already exists"){
+              toast.warning("Câu hỏi đã tồn tại");
+            }
             console.log(error)
           });
       },
     });
   };
-  
   //xóa
   const handleDelete = (id) => {
     Swal.fire({
@@ -158,7 +124,7 @@ export default function ListFaq() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`/faq/delete/${id}`)
+          .delete(`/feedback/delete/${id}`)
           .then((response) => {
             // Reload the FAQ data after deleting
             fetchData();
@@ -170,8 +136,8 @@ export default function ListFaq() {
       }
     });
   };
-
-  return faq === null ? (
+  
+  return feedback === null ? (
     <Spinner color="failure" />
   ) : (
     <Card>
@@ -194,14 +160,6 @@ export default function ListFaq() {
             Tìm kiếm
           </Button>
         </div>
-        <Button
-        style={{ height: "30px" }}
-          onClick={() => showFormCreate()}
-          className="bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold rounded"
-        >
-          <FontAwesomeIcon icon={faPlus} />
-          <span className="ml-2">Thêm</span>
-        </Button>
       </div>
       <div className="flex justify-center items-center">
       <div className="flex flex-wrap gap-2 ml-9">
@@ -211,11 +169,8 @@ export default function ListFaq() {
         <Badge onClick={() => handleSortChange("id","ASC")} color="info">
           Id
         </Badge>
-        <Badge onClick={() => handleSortChange("question", "ASC")} color="success">
-          Question
-        </Badge>
-        <Badge onClick={() => handleSortChange("answer", "ASC")} color="failure">
-          Answer
+        <Badge onClick={() => handleSortChange("content", "ASC")} color="success">
+          Content
         </Badge>
         <Badge onClick={() => handleSortChange("createdAt", "DESC")} color="warning">
           Create
@@ -242,30 +197,32 @@ export default function ListFaq() {
       <Table hoverable={true}>
         <Table.Head className={activeClassname}>
           <Table.HeadCell></Table.HeadCell>
-          <Table.HeadCell>Câu hỏi</Table.HeadCell>
-          <Table.HeadCell>Trả lời</Table.HeadCell>
+          <Table.HeadCell>Nội dung</Table.HeadCell>
+          <Table.HeadCell>Từ khóa</Table.HeadCell>
+          <Table.HeadCell>Người gửi</Table.HeadCell>
           <Table.HeadCell></Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {faq.map((item, index) => (
+          {feedback.map((item, index) => (
             <Table.Row
               className="bg-white dark:border-gray-700 dark:bg-gray-800"
               key={item.id}
             >
               <Table.Cell>{index + 1}</Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
-                {item.question}
+              {item.content}
               </Table.Cell>
               <Table.Cell className="whitespace-normal  text-gray-900 dark:text-white">
-                {item.answer?.length > 50
-                  ? item.answer.slice(0, 50) + "..."
-                  : item.answer}
+              {item.question}
+              </Table.Cell>
+              <Table.Cell className="whitespace-normal  text-gray-900 dark:text-white">
+              {item.name}
               </Table.Cell>
               <Table.Cell className="whitespace-normal text-gray-900 dark:text-white">
                 <div className="flex justify-end">
-                  <Button
+                <Button
                     style={{ height: '30px', width: "30px" }}
-                    onClick={() => showFormEdit(item.id)}
+                    onClick={() => showFormCreate(item.id)}
                     className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
                   >
                     <FontAwesomeIcon icon={faEdit} />

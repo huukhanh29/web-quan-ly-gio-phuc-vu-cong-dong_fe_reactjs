@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { useDispatch, useStore } from "react-redux";
-import { logOut, setAuthorized } from "../../../store/authSlice";
+import { setAuthorized } from "../../../store/authSlice";
 
 export default function Admin() {
   const store = useStore();

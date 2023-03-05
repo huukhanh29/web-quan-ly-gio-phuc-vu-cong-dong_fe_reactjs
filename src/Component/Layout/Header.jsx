@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
+import { setToken } from "../../store/authSlice";
 export default function Header() {
   const {token} = useStore().getState().auth;
   const decoded = jwt_decode(token);
@@ -18,16 +19,14 @@ export default function Header() {
       const { data, status } = await axios.get(`/user/get/${id}`);
       if (status === 200) {
         setUsers(data);
-        //console.log(avatar)
-        //console.log(data)
       }
     } catch (error) {
       if (error.response === 403) {
         console.log(error.response)
-        //dispatch(setToken(""));
+        dispatch(setToken(""));
       }
     }
-  }, [ id]);
+  }, [ id, dispatch]);
   useEffect(() => {
     fetchData();
   }, [fetchData]);

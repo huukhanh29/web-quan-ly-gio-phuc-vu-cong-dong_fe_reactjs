@@ -28,8 +28,12 @@ export default function MainSidebar() {
   return (
     <>
       <div className="w-fit">
-        <Button gradientDuoTone="greenToBlue" onClick={toggleSidebar} className="ml-3">
-        {isSidebarHidden ? (
+        <Button
+          gradientDuoTone="greenToBlue"
+          onClick={toggleSidebar}
+          className="ml-3"
+        >
+          {isSidebarHidden ? (
             <FontAwesomeIcon icon={faChevronRight} />
           ) : (
             <FontAwesomeIcon icon={faChevronLeft} />
@@ -82,32 +86,40 @@ export default function MainSidebar() {
               )}
               {role === "ADMIN" && (
                 <>
-                <Sidebar.Item
-                  key={"user"}
-                  as={Link}
-                  to={"/admin/list-user"}
-                  className={
-                    "/admin/list-user" === pathname ? activeClassname : ""
-                  }
-                  icon={() => <FontAwesomeIcon icon={faUsers} />}
-                >
-                  Quản lý User
-                </Sidebar.Item>
-                <Sidebar.Item
-                  key={"chatbot"}
-                  as={Link}
-                  to={"/admin/list-faq"}
-                  className={
-                    "/admin/list-faq" === pathname ? activeClassname : ""
-                  }
-                  icon={() => <FontAwesomeIcon icon={faComments} />}
-                >
-                  Quản lý Chat
-                </Sidebar.Item>
-                
+                  <Sidebar.Item
+                    key={"user"}
+                    as={Link}
+                    to={"/admin/list-user"}
+                    className={
+                      "/admin/list-user" === pathname ? activeClassname : ""
+                    }
+                    icon={() => <FontAwesomeIcon icon={faUsers} />}
+                  >
+                    Quản lý User
+                  </Sidebar.Item>
+                  <Sidebar.Item
+                    key={"chatbot"}
+                    as={Link}
+                    to={"/admin/list-faq"}
+                    className={
+                      "/admin/list-faq" === pathname ? activeClassname : ""
+                    }
+                    icon={() => <FontAwesomeIcon icon={faComments} />}
+                  >
+                    Quản lý Chat
+                  </Sidebar.Item>
+                  <Sidebar.Item
+                    key={"feedback_admin"}
+                    as={Link}
+                    to={"/admin/list-feedback"}
+                    className={
+                      "/admin/list-feedback" === pathname ? activeClassname : ""
+                    }
+                    icon={() => <FontAwesomeIcon icon={faStackExchange} />}
+                  >
+                    Quản lý phản hồi
+                  </Sidebar.Item>
                 </>
-                
-                
               )}
             </Sidebar.ItemGroup>
           </Sidebar.Items>

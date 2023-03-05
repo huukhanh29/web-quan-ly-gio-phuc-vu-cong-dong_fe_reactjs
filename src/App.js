@@ -14,10 +14,11 @@ import Page403 from './Component/Page/403/403';
 import ListFaq from './Component/Page/Admin/Faq/ListFaq';
 import ListUser from './Component/Page/Admin/User/ListUser';
 import Profile from './Component/Page/Profile';
+import ListFeedbackAdmin from './Component/Page/Admin/Faq/ListFeedbackAdmin';
 
 function App() {
   const router = createBrowserRouter([
-    {//sử dụng ProtectRoute 
+    {
       path: '/',
       element:
         <ProtectedRoute><Root /></ProtectedRoute>,
@@ -64,18 +65,22 @@ function App() {
             {
               path: 'list-user',
               element: <ListUser />
+            },
+            {
+              path: 'list-feedback',
+              element: <ListFeedbackAdmin />
             }
           ]
         },
         {
           path: '/lecturer',
           element: <ProtectedAuthRoute role="LECTURER"><Lecturer/></ProtectedAuthRoute>
-        },
+        }
         ,
         {
           path: '/profile',
           element: <Profile />
-        }
+        },
       ]
     },
     {
@@ -85,7 +90,7 @@ function App() {
     {
       path: '/403',
       element: <Page403 />
-    }
+    },
   ])
   return (
     <RouterProvider router={router} />

@@ -3,7 +3,6 @@ import { ToastContainer } from "react-toastify";
 import Header from "./Header";
 import MainSidebar from "./MainSidebar";
 import "react-toastify/dist/ReactToastify.css";
-import Footers from "./Footer";
 export default function Root() {
   return (
     <div className="flex h-screen w-full flex-col overflow-hidden">
@@ -14,7 +13,6 @@ export default function Root() {
           <Outlet />
         </main>
       </div>
-      <Footers />
       <ToastContainer
         position="top-right"
         autoClose={2000}
