@@ -26,7 +26,7 @@ export default function Student() {
         />
         <button
           className="app-chatbot-button"
-          onClick={() => toggleChatbot((prev) => !prev)}
+          onClick={() => { toggleChatbot((prev) => !prev); }}
         >
           <ButtonIcon className="app-chatbot-button-icon" />
         </button>

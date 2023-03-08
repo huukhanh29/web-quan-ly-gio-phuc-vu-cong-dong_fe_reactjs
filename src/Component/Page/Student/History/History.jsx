@@ -1,6 +1,8 @@
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
+import { format } from 'date-fns'
 import {
   Badge,
   Button,
@@ -13,35 +15,37 @@ import {
   TextInput,
 } from "flowbite-react";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useStore } from "react-redux";
 import { setToken } from "../../../../store/authSlice";
 import Swal from "sweetalert2";
-import "./Sweet.css";
-import { toast } from "react-toastify";
-export default function ListFeedbackAdmin() {
+import "./../../Admin/Faq/Sweet.css";
+export default function History() {
   const dispatch = useDispatch();
   const activeClassname = "bg-gradient-to-r from-green-300 to-blue-400";
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
-  const [feedback, setFeedbacks] = useState([]);
+  const [history, setHistories] = useState([]);
   const [sort, setSort] = useState({ sortBy: "", sortDir: "" });
   const [searchTerm, setSearchTerm] = useState("");
+  const { token } = useStore().getState().auth;
+  const decoded = jwt_decode(token);
+  const userId = decoded.id;
   const fetchData = useCallback(async () => {
     try {
+    
       const { data } = await axios.get(
-        `/feedback/get/all?page=${currentPage}&size=${pageSize}&sortBy=${sort.sortBy}&sortDir=${sort.sortDir}&searchTerm=${searchTerm}`
+        `/user/${userId}/chat?page=${currentPage}&size=${pageSize}&sortBy=${sort.sortBy}&sortDir=${sort.sortDir}&searchTerm=${searchTerm}`
       );
-
-      setFeedbacks(data.content);
+      setHistories(data.content);
       setTotalPages(data.totalPages);
       //console.log(data)
     } catch (error) {
-      // if (error.response.status === 403) {
-         dispatch(setToken(""));
-      //}
+      if (error.response.status === 403) {
+        dispatch(setToken(""));
+      }
     }
-  }, [currentPage, dispatch, pageSize, sort, searchTerm]);
+  }, [currentPage, dispatch, pageSize, sort, searchTerm, userId]);
 
   useEffect(() => {
     document.title = "Danh sách phản hồi";
@@ -70,74 +74,19 @@ export default function ListFeedbackAdmin() {
     setPageSize(10);
     setCurrentPage(0);
   };
-  //thêm mới
-  const showFormCreate = (id) => {
-    const feedbackItem = feedback.find((item) => item.id === id);
+  const showFormInfo = (id) => {
+    const item = history.find((item) => item.id === id);
     Swal.fire({
-      title: "Thêm câu hỏi mới",
-      html: `
-      <input type="text" id="name" class="swal2-input" value=${feedbackItem.content} disabled>
-      <textarea type="text" id="question" class="swal2-textarea form-textarea " placeholder="Question"></textarea>
-      <textarea type="text" id="answer" class="swal2-textarea form-textarea" placeholder="Answer"></textarea>`,
+      title: "Thông tin",
+      html: `<textarea type="text" id="question" class="swal2-textarea form-textarea " placeholder="Question" disabled>${item.question}</textarea>
+      <textarea type="text" id="answer" class="swal2-textarea form-textarea" placeholder="Answer" disabled>${item.answer}</textarea>`,
+      confirmButtonText: "OK",
       focusConfirm: false,
-      preConfirm: () => {
-        const question = Swal.getPopup().querySelector("#question").value;
-        const answer = Swal.getPopup().querySelector("#answer").value;
-        if (!question || !answer) {
-          Swal.showValidationMessage("Vui lòng nhập câu hỏi và trả lời");
-          return false;
-        }
-        const newData = { question, answer };
-        // Kiểm tra trùng lặp câu hỏi
-        // const existingQuestion = faq.find((item) => item.question === question);
-        // if (existingQuestion) {
-        //   Swal.showValidationMessage("Câu hỏi đã tồn tại");
-        //   return false;
-        // }
-        axios
-          .put(`/feedback/reply/${id}`, newData)
-          .then((response) => {
-            // Reload the FAQ data after creating
-            fetchData();
-            handleSortChange("createdAt", "DESC");
-            toast.success("Thêm thành công");
-          })
-          .catch((error) => {
-            if(error.response.data.message === "Question already exists"){
-              toast.warning("Câu hỏi đã tồn tại");
-            }
-            console.log(error)
-          });
-      },
-    });
+      allowOutsideClick: () => !Swal.isLoading(),
+      
+    })
   };
-  //xóa
-  const handleDelete = (id) => {
-    Swal.fire({
-      title: "Bạn có chắc chắn muốn xóa câu hỏi này?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#dc3545",
-      cancelButtonColor: "#6c757d",
-      confirmButtonText: "Xóa",
-      cancelButtonText: "Hủy",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`/feedback/delete/${id}`)
-          .then((response) => {
-            // Reload the FAQ data after deleting
-            fetchData();
-            toast.success("Xóa thành công");
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-    });
-  };
-  
-  return feedback === null ? (
+  return history === null ? (
     <Spinner color="failure" />
   ) : (
     <Card>
@@ -169,14 +118,8 @@ export default function ListFeedbackAdmin() {
         <Badge onClick={() => handleSortChange("id","ASC")} color="info">
           Id
         </Badge>
-        <Badge onClick={() => handleSortChange("content", "ASC")} color="success">
-          Content
-        </Badge>
         <Badge onClick={() => handleSortChange("createdAt", "DESC")} color="warning">
           Create
-        </Badge>
-        <Badge onClick={() => handleSortChange("updatedAt", "DESC")} color="purple">
-          Update
         </Badge>
         <Dropdown label={pageSize} style={{ height: "21px", width : "50px" }} color="greenToBlue">
           <Dropdown.Item onClick={() => handlePageSizeChange(5)}>
@@ -197,42 +140,37 @@ export default function ListFeedbackAdmin() {
       <Table hoverable={true}>
         <Table.Head className={activeClassname}>
           <Table.HeadCell></Table.HeadCell>
-          <Table.HeadCell>Nội dung</Table.HeadCell>
-          <Table.HeadCell>Từ khóa</Table.HeadCell>
-          <Table.HeadCell>Người gửi</Table.HeadCell>
+          <Table.HeadCell>Câu hỏi</Table.HeadCell>
+          <Table.HeadCell>Trả lời</Table.HeadCell>
+          <Table.HeadCell>Thời gian</Table.HeadCell>
           <Table.HeadCell></Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {feedback.map((item, index) => (
+          {history.map((item, index) => (
             <Table.Row
               className="bg-white dark:border-gray-700 dark:bg-gray-800"
-              key={item.id}
+              key={index}
             >
               <Table.Cell>{index + 1}</Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
-              {item.content}
+              {item.question??""}
               </Table.Cell>
               <Table.Cell className="whitespace-normal  text-gray-900 dark:text-white">
-              {item.question}
+                {item.answer?.length > 50
+                  ? item.answer.slice(0, 50) + "..."
+                  : item.answer}
               </Table.Cell>
-              <Table.Cell className="whitespace-normal  text-gray-900 dark:text-white">
-              {item.name}
+              <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
+              {format(new Date(item.createdAt), 'dd/MM/yyyy HH:mm:ss')}
               </Table.Cell>
               <Table.Cell className="whitespace-normal text-gray-900 dark:text-white">
                 <div className="flex justify-end">
                 <Button
                     style={{ height: '30px', width: "30px" }}
-                    onClick={() => showFormCreate(item.id)}
+                    onClick={() => showFormInfo(item.id)}
                     className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
                   >
-                    <FontAwesomeIcon icon={faEdit} />
-                  </Button>
-                  <Button
-                  style={{ height: '30px', width: "30px" }}
-                    onClick={() => handleDelete(item.id)}
-                    className="bg-gradient-to-r from-pink-400 to-orange-500 text-white font-bold py-1 px-4 rounded"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
+                    <FontAwesomeIcon icon={faInfo} />
                   </Button>
                 </div>
               </Table.Cell>

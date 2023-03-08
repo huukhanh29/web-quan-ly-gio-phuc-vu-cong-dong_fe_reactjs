@@ -14,7 +14,7 @@ function ProtectedRoute({ children }) {
     if (token && !authorized) {
       dispatch(setAuthorized(true));
     }
-  }, [dispatch, token]);
+  }, [dispatch, token,authorized]);
   //console.log(authorized)
   return authorized || token ? (
     children ? (
@@ -28,37 +28,4 @@ function ProtectedRoute({ children }) {
 }
 
 export default ProtectedRoute;
-  // const store = useStore();
-  // const token = store.getState().auth.token;
-  // const [userRole, setUserRole] = useState(role);
-  // const [isLoading, setIsLoading] = useState(true);
-
-  // useEffect(() => {
-  //   if (token) {
-  //     const decoded = jwt_decode(token);
-  //     const id = decoded.id;
-  //     axios.get(`/user/get/${id}`).then((response) => {
-  //       const user = response.data;
-  //       setUserRole(user.role);
-  //       setIsLoading(false);
-  //     });
-  //   }
-  // }, [token]);
-
-  // if (!token) {
-  //   return <Navigate to="/login" replace={true}/>;
-  // }
-
-  // if (isLoading) {
-  //   return <Spinner
-  //   color="failure"
-  //   aria-label="Failure spinner example"
-  // />;
-  // }
-
-  // const decoded = jwt_decode(token);
-  // if (userRole !== decoded.role[0].authority) {
-  //   return <div>403</div>;
-  // }
-  // return children;
-
+ 

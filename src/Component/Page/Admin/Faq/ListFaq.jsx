@@ -189,7 +189,7 @@ export default function ListFaq() {
           <Button
             className={activeClassname}
             style={{ height: "30px" }}
-            onClick={() => handleSortChange("id")}
+            onClick={() => handleSortChange("id","ASC")}
           >
             Tìm kiếm
           </Button>
@@ -220,8 +220,8 @@ export default function ListFaq() {
         <Badge onClick={() => handleSortChange("createdAt", "DESC")} color="warning">
           Create
         </Badge>
-        <Badge onClick={() => handleSortChange("updatedAt", "DESC")} color="purple">
-          Update
+        <Badge onClick={() => handleSortChange("uniqueHistoryCount", "DESC")} color="purple">
+          Popular
         </Badge>
         <Dropdown label={pageSize} style={{ height: "21px", width : "50px" }} color="greenToBlue">
           <Dropdown.Item onClick={() => handlePageSizeChange(5)}>

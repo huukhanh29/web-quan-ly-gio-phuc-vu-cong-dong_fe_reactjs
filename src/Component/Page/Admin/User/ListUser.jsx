@@ -204,7 +204,7 @@ export default function ListUser() {
           <Button
             className={activeClassname}
             style={{ height: "30px" }}
-            onClick={() => handleSortChange("id")}
+            onClick={() => handleSortChange("id","ASC")}
           >
             Tìm kiếm
           </Button>

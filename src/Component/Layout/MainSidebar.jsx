@@ -4,6 +4,7 @@ import {
   faChevronRight,
   faComment,
   faComments,
+  faReply,
   faUser,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
@@ -81,6 +82,19 @@ export default function MainSidebar() {
                     icon={() => <FontAwesomeIcon icon={faStackExchange} />}
                   >
                     Danh sách phản hồi
+                  </Sidebar.Item>
+                  <Sidebar.Item
+                    key={"history"}
+                    as={Link}
+                    to={"/student/list-history"}
+                    className={
+                      "/student/list-history" === pathname
+                        ? activeClassname
+                        : ""
+                    }
+                    icon={() => <FontAwesomeIcon icon={faReply} />}
+                  >
+                    Lịch sử
                   </Sidebar.Item>
                 </>
               )}

@@ -10,11 +10,13 @@ import SendFeedback from './Component/Page/Student/FeedBack/SendFeedback';
 import ListFeedback from './Component/Page/Student/FeedBack/ListFeedback';
 import Lecturer from './Component/Page/Lecturer/Lecturer';
 import Student from './Component/Page/Student/Student';
-import Page403 from './Component/Page/403/403';
+import Page403 from './Component/Page/Error/403';
 import ListFaq from './Component/Page/Admin/Faq/ListFaq';
 import ListUser from './Component/Page/Admin/User/ListUser';
 import Profile from './Component/Page/Profile';
 import ListFeedbackAdmin from './Component/Page/Admin/Faq/ListFeedbackAdmin';
+import History from './Component/Page/Student/History/History';
+import Page404 from './Component/Page/Error/404';
 
 function App() {
   const router = createBrowserRouter([
@@ -22,7 +24,7 @@ function App() {
       path: '/',
       element:
         <ProtectedRoute><Root /></ProtectedRoute>,
-      errorElement: <div>404</div>,
+      errorElement: <div><Page404/></div>,
       children: [
         {
           path: '/',
@@ -45,6 +47,10 @@ function App() {
             {
               path: 'list-feedback',
               element: <ListFeedback />
+            },
+            {
+              path: 'list-history',
+              element: <History />
             }
           ]
         },

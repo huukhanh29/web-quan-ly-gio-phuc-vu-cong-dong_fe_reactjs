@@ -1,5 +1,3 @@
-import { faEdit, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import {
   Badge,
@@ -12,13 +10,11 @@ import {
   Table,
   TextInput,
 } from "flowbite-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useStore } from "react-redux";
 import { setToken } from "../../../../store/authSlice";
 import jwt_decode from "jwt-decode";
-import Swal from "sweetalert2";
 import "./../../Admin/Faq/Sweet.css";
-import { toast } from "react-toastify";
 export default function ListFeedback() {
   const dispatch = useDispatch();
   const { token } = useStore().getState().auth;
@@ -33,13 +29,14 @@ export default function ListFeedback() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isFetchingAll, setIsFetchingAll] = useState(true);
 
-  const queryParams = {
+  const queryParams = useMemo(() => ({
     page: currentPage,
     size: pageSize,
     sortBy: sort.sortBy,
     sortDir: sort.sortDir,
     searchTerm: searchTerm,
-  };
+  }), [currentPage, pageSize, sort.sortBy, sort.sortDir, searchTerm]);
+  
   const handleAll =() =>{
     setIsFetchingAll(true);
     queryParams.userId = null;
@@ -59,13 +56,12 @@ export default function ListFeedback() {
       const { data } = await axios.get(url, { params: queryParams });
       setFeedbacks(data.content);
       setTotalPages(data.totalPages);
-      console.log(data);
     } catch (error) {
       if (error.response.status === 403) {
         dispatch(setToken(""));
       }
     }
-  }, [currentPage, dispatch, pageSize, sort, searchTerm, isFetchingAll]);
+  }, [dispatch, isFetchingAll, id, queryParams]);
   
 
   useEffect(() => {
@@ -116,7 +112,7 @@ export default function ListFeedback() {
           <Button
             className={activeClassname}
             style={{ height: "30px" }}
-            onClick={() => handleSortChange("id")}
+            onClick={() => handleSortChange("id","ASC")}
           >
             Tìm kiếm
           </Button>
