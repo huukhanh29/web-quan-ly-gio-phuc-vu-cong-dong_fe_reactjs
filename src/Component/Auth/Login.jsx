@@ -29,6 +29,7 @@ function Login() {
         data: data,
       })
         .then(function (res) {
+          console.log(res)
           dispatch(
             // sử dụng useSlice bằng đối tượng
             setLoginInfo({

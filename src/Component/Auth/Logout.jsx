@@ -13,7 +13,7 @@ const Logout = () => {
 
   return (
     <p className="dropdown-item" onClick={handleLogout}>
-      Logout
+      Đăng xuất
     </p>
   );
 };

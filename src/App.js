@@ -13,10 +13,10 @@ import Student from './Component/Page/Student/Student';
 import Page403 from './Component/Page/Error/403';
 import ListFaq from './Component/Page/Admin/Faq/ListFaq';
 import ListUser from './Component/Page/Admin/User/ListUser';
-import Profile from './Component/Page/Profile';
 import ListFeedbackAdmin from './Component/Page/Admin/Faq/ListFeedbackAdmin';
 import History from './Component/Page/Student/History/History';
 import Page404 from './Component/Page/Error/404';
+import Profile from './Component/Page/Profile/Profile';
 
 function App() {
   const router = createBrowserRouter([

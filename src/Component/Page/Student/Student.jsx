@@ -7,7 +7,7 @@ import config from "./BotChat/config";
 import MessageParser from "./BotChat/MessageParser";
 import "react-chatbot-kit/build/main.css";
 import { ReactComponent as ButtonIcon } from "./BotChat/robot.svg";
-import Profile from "../Profile";
+import Profile from "../Profile/Profile";
 export default function Student() {
   const [showChatbot, toggleChatbot] = useState(false);
   return (

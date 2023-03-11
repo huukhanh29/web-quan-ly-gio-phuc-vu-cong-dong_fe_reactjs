@@ -88,12 +88,7 @@ export default function ListFeedbackAdmin() {
           return false;
         }
         const newData = { question, answer };
-        // Kiểm tra trùng lặp câu hỏi
-        // const existingQuestion = faq.find((item) => item.question === question);
-        // if (existingQuestion) {
-        //   Swal.showValidationMessage("Câu hỏi đã tồn tại");
-        //   return false;
-        // }
+
         axios
           .put(`/feedback/reply/${id}`, newData)
           .then((response) => {

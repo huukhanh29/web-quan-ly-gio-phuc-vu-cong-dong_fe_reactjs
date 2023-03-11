@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { useDispatch, useStore } from "react-redux";
-import { setAuthorized } from "../../../store/authSlice";
+import { setToken } from "../../../store/authSlice";
 import { Chart } from "./Chart";
 
 export default function Admin() {
@@ -22,9 +22,8 @@ export default function Admin() {
         } catch (error) {
           if (error.response.status === 403) {
             //dispatch(logOut())
-            dispatch(setAuthorized(false));
+            dispatch(setToken(""));
           }
-
         }
       }
     };
@@ -33,6 +32,7 @@ export default function Admin() {
     <div className="mt-5">
       <h3 className="pt-5">hello admin</h3>
       <Chart/>
+      
     </div>
   );
 }
