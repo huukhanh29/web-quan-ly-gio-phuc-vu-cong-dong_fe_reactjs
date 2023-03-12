@@ -24,7 +24,7 @@ export default function Profile() {
       if (status === 200) {
         setUsers(data);
         dispatch(setAvatar(data.avatar));
-        //console.log(data)
+        console.log(data)
       }
     } catch (error) {
       if (error.response.status === 403) {
@@ -138,11 +138,17 @@ export default function Profile() {
     Swal.fire({
       title: "Chỉnh sửa",
       html: `
-      <label for="phone" class="swal2-label">Điện thoại:</label>
-      <input type="text" id="phone" class="swal2-input" value="${users.phone}" placeholder="Điện thoại"/>
-    
-      <label for="dateOfBirth" class="swal2-label">Ngày sinh:</label>
-      <input type="date" id="dateOfBirth" class="swal2-input" value="${users.date}" style="width:270px" placeholder="Ngày sinh"/>
+      <select id="gender" class="swal2-input" style="height:50px;width:268px">
+          <option value="${users.gender}" selected>${users.gender}</option>
+          <option value="Nam">Nam</option>
+          <option value="Nữ">Nữ</option>
+        </select>
+      <input type="text" id="phone" class="swal2-input" placeholder="Điện thoại"
+      value="${users.phone??""}"/>
+      <input type="date" id="dateOfBirth" class="swal2-input" 
+      value="${users.date}" style="width:270px"/>
+      <input type="text" id="address" class="swal2-input" placeholder="Địa chỉ"
+      value="${users.address??""}" />
     `
     ,
       confirmButtonText: "Lưu",
@@ -151,8 +157,12 @@ export default function Profile() {
       preConfirm: () => {
         const phoneInput = Swal.getPopup().querySelector("#phone");
         const dateOfBirthInput = Swal.getPopup().querySelector("#dateOfBirth");
+        const genderInput = Swal.getPopup().querySelector("#gender");
+        const addressInput = Swal.getPopup().querySelector("#address");
         const phone = phoneInput.value.trim();
         const dateOfBirth = dateOfBirthInput.value;
+        const gender = genderInput.value;
+        const address = addressInput.value
         // Kiểm tra số điện thoại
         const phoneRegex = /^[0-9]+$/;
         if (!phoneRegex.test(phone) || phone.length < 9 || phone.length > 12) {
@@ -173,7 +183,7 @@ export default function Profile() {
           );
           return false;
         }
-        return { phone: phone, dateOfBirth: dateOfBirth };
+        return { phone: phone, dateOfBirth: dateOfBirth , gender:gender, address:address};
       },
     }).then((result) => {
       if (result.isConfirmed) {
@@ -255,6 +265,10 @@ export default function Profile() {
                   <dd className="mt-1">{users.username}</dd>
                 </div>
                 <div className="sm:col-span-1">
+                  <dt className="font-medium text-gray-500">Giới tính</dt>
+                  <dd className="mt-1">{users.gender??""}</dd>
+                </div>
+                <div className="sm:col-span-1">
                   <dt className="font-medium text-gray-500">Email</dt>
                   <dd className="mt-1">{users.email}</dd>
                 </div>
@@ -269,6 +283,10 @@ export default function Profile() {
                       {new Date(users.date).toLocaleDateString("en-GB") ?? ""}
                     </dd>
                   </div>
+                </div>
+                <div className="sm:col-span-1">
+                  <dt className="font-medium text-gray-500">Địa chỉ</dt>
+                  <dd className="mt-1">{users.address??""}</dd>
                 </div>
               </dl>
             </div>

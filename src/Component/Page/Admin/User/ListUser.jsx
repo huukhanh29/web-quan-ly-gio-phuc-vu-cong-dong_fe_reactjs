@@ -85,9 +85,14 @@ export default function ListUser() {
         <input type="text" id="name" class="swal2-input" placeholder="Name" style="height:30px">
         <input type="text" id="username" class="swal2-input" placeholder="Username" style="height:30px">
         <input type="email" id="email" class="swal2-input" placeholder="Email" style="height:30px">
+        <input type="text" id="address" class="swal2-input" placeholder="Address" style="height:30px">
+        <select id="gender" class="swal2-input" style="height:30px;width:268px">
+          <option value="Nam">Nam</option>
+          <option value="Nữ">Nữ</option>
+        </select>
         <input type="password" id="password" class="swal2-input" placeholder="Password" style="height:30px">
         <input type="password" id="cpassword" class="swal2-input" placeholder="Confirm Password" style="height:30px">
-        <select id="role" class="swal2-input" style="height:30px">
+        <select id="role" class="swal2-input" style="height:30px;width:268px">
           <option value="ADMIN">ADMIN</option>
           <option value="LECTURER">LECTURER</option>
           <option value="STUDENT">STUDENT</option>
@@ -98,30 +103,32 @@ export default function ListUser() {
         const name = Swal.getPopup().querySelector("#name").value;
         const username = Swal.getPopup().querySelector("#username").value;
         const email = Swal.getPopup().querySelector("#email").value;
+        const address = Swal.getPopup().querySelector("#address").value;
+        const gender = Swal.getPopup().querySelector("#gender").value;
         const password = Swal.getPopup().querySelector("#password").value;
         const cpassword = Swal.getPopup().querySelector("#cpassword").value;
         const role = Swal.getPopup().querySelector("#role").value;
-
+  
         // Check if email is valid
         if (!/\S+@\S+\.\S+/.test(email)) {
           Swal.showValidationMessage("Email không hợp lệ");
           return false; // prevent closing the modal
         }
-
+  
         // Check if passwords match
         if (password !== cpassword) {
           Swal.showValidationMessage("Mật khẩu không khớp");
           return false; // prevent closing the modal
         }
-
+  
         // Check if required fields are not empty
-        if (!name || !email || !username || !password) {
+        if (!name || !email || !username || !password || !address || !gender) {
           Swal.showValidationMessage("Vui lòng nhập đủ thông tin");
           return false; // prevent closing the modal
         }
-
+  
         // Submit the form if all checks pass
-        const newData = { name, username, email, password, role };
+        const newData = { name, username, email, address, gender, password, role };
         return axios
           .post("/auth/signup", newData)
           .then((response) => {
@@ -132,9 +139,7 @@ export default function ListUser() {
           .catch((error) => {
             if (error.response.data.message === "ERROR: EMAIL WAS USED") {
               Swal.showValidationMessage("Email đã tồn tại");
-            } else if (
-              error.response.data.message === "ERROR: USERNAME WAS USED"
-            ) {
+            } else if (error.response.data.message === "ERROR: USERNAME WAS USED") {
               Swal.showValidationMessage("Username đã tồn tại");
             } else {
               Swal.showValidationMessage("Có lỗi xảy ra khi thêm người dùng");

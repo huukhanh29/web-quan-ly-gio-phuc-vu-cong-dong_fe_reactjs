@@ -29,7 +29,7 @@ function Login() {
         data: data,
       })
         .then(function (res) {
-          console.log(res)
+          //console.log(res)
           dispatch(
             // sử dụng useSlice bằng đối tượng
             setLoginInfo({
@@ -54,10 +54,27 @@ function Login() {
               break;
           }
         })
-        .catch(function (res) {
+        .catch(function (error) {
           dispatch(setAuthorized(false));
-          if(res.response.data.message === "ACCOUNT HAS BEEN BLOCKED"){
-              toast.error("Tài khoản đã bị khóa")
+          if (error.response) {
+            // phản hồi được nhận
+            if (error.response.data.message === "ACCOUNT HAS BEEN BLOCKED") {
+              toast.error("Tài khoản đã bị khóa");
+            } else if (error.response.data.message === "INVALID PASSWORD") {
+              toast.error("Sai mật khấu");
+            } else if (
+              error.response.data.message === "INVALID USERNAME OR EMAIL"
+            ) {
+              toast.error("Sai username/email");
+            } else {
+              toast.error("Lỗi! Vui lòng đăng nhập lại sau");
+            }
+          } else if (error.request) {
+            // không nhận được phản hồi
+            toast.error("Không thể kết nối đến server");
+          } else {
+            // lỗi khác
+            toast.error("Lỗi! Vui lòng đăng nhập lại sau");
           }
         });
     },
@@ -67,7 +84,7 @@ function Login() {
     <div className="flex justify-center h-screen min-w-min">
       <div className="w-full mt-20 sm:w-1/2 lg:w-1/3">
         <Card>
-        <Label className="text-xl text-center">Đăng nhập</Label>
+          <Label className="text-xl text-center">Đăng nhập</Label>
           <form
             className="flex flex-col gap-4 justify-center align-middle"
             onSubmit={formik.handleSubmit}
