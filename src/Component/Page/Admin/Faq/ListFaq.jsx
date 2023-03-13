@@ -170,7 +170,19 @@ export default function ListFaq() {
       }
     });
   };
-
+  //chi tiết
+  const showFormInfo = (id) => {
+    const item = faq.find((item) => item.id === id);
+    Swal.fire({
+      title: "Thông tin",
+      html: `<textarea type="text" id="question" class="swal2-textarea form-textarea " placeholder="Question" disabled>${item.question}</textarea>
+      <textarea type="text" id="answer" class="swal2-textarea form-textarea" placeholder="Answer" disabled>${item.answer}</textarea>`,
+      confirmButtonText: "OK",
+      focusConfirm: false,
+      allowOutsideClick: () => !Swal.isLoading(),
+      
+    })
+  };
   return faq === null ? (
     <Spinner color="failure" />
   ) : (
@@ -251,12 +263,15 @@ export default function ListFaq() {
             <Table.Row
               className="bg-white dark:border-gray-700 dark:bg-gray-800"
               key={item.id}
+              
             >
               <Table.Cell>{index + 1}</Table.Cell>
-              <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
+              <Table.Cell onClick={() => showFormInfo(item.id)}
+              className="whitespace-normal font-medium text-gray-900 dark:text-white">
                 {item.question}
               </Table.Cell>
-              <Table.Cell className="whitespace-normal  text-gray-900 dark:text-white">
+              <Table.Cell onClick={() => showFormInfo(item.id)}
+              className="whitespace-normal  text-gray-900 dark:text-white">
                 {item.answer?.length > 50
                   ? item.answer.slice(0, 50) + "..."
                   : item.answer}

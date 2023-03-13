@@ -5,6 +5,7 @@ import {
   faComment,
   faComments,
   faReply,
+  faTasks,
   faUser,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
@@ -132,6 +133,17 @@ export default function MainSidebar() {
                     icon={() => <FontAwesomeIcon icon={faStackExchange} />}
                   >
                     Quản lý phản hồi
+                  </Sidebar.Item>
+                  <Sidebar.Item
+                    key={"activity"}
+                    as={Link}
+                    to={"/admin/list-activity"}
+                    className={
+                      "/admin/list-activity" === pathname ? activeClassname : ""
+                    }
+                    icon={() => <FontAwesomeIcon icon={faTasks} />}
+                  >
+                    Hoạt động
                   </Sidebar.Item>
                 </>
               )}

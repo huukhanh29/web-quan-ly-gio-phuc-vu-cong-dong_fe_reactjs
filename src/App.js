@@ -17,6 +17,7 @@ import ListFeedbackAdmin from './Component/Page/Admin/Faq/ListFeedbackAdmin';
 import History from './Component/Page/Student/History/History';
 import Page404 from './Component/Page/Error/404';
 import Profile from './Component/Page/Profile/Profile';
+import ListActivity from './Component/Page/Admin/Activity/ListActivity';
 
 function App() {
   const router = createBrowserRouter([
@@ -75,6 +76,10 @@ function App() {
             {
               path: 'list-feedback',
               element: <ListFeedbackAdmin />
+            },
+            {
+              path: 'list-activity',
+              element: <ListActivity />
             }
           ]
         },
