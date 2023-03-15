@@ -5,11 +5,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Card } from "flowbite-react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { setToken } from "../../../store/authSlice";
+import { setToken } from "../../../../store/authSlice";
 
 const localizer = momentLocalizer(moment);
 
-export default function Admin() {
+export default function CalendarAdmin() {
   const dispatch = useDispatch();
   const [events, setEvents] = useState([]);
   const fetchData = useCallback(async () => {
@@ -41,7 +41,7 @@ export default function Admin() {
         defaultDate={new Date()}
         views={{ month: true, agenda:true }}
         events={events}
-        style={{ height: "100vh" }}
+        style={{ height: "75vh" }}
       />
     </Card>
   );

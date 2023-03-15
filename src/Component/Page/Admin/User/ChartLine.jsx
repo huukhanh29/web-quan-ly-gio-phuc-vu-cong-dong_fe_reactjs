@@ -36,7 +36,7 @@ export const options = {
   },
 };
 
-export function Chart() {
+export function ChartLine() {
   const [chartData, setChartData] = useState(null);
   useEffect(() => {
     axios

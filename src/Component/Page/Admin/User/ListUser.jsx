@@ -16,7 +16,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setToken } from "../../../../store/authSlice";
 import Swal from "sweetalert2";
-// import "./Sweet.css";
 import { toast } from "react-toastify";
 
 export default function ListUser() {
@@ -82,16 +81,16 @@ export default function ListUser() {
     Swal.fire({
       title: "Thêm người dùng",
       html: `
-        <input type="text" id="name" class="swal2-input" placeholder="Name" style="height:30px">
-        <input type="text" id="username" class="swal2-input" placeholder="Username" style="height:30px">
-        <input type="email" id="email" class="swal2-input" placeholder="Email" style="height:30px">
-        <input type="text" id="address" class="swal2-input" placeholder="Address" style="height:30px">
+        <input type="text" id="name" class="swal2-input" placeholder="Name" style="height:30px;width:268px">
+        <input type="text" id="username" class="swal2-input" placeholder="Username" style="height:30px;width:268px">
+        <input type="email" id="email" class="swal2-input" placeholder="Email" style="height:30px;width:268px">
+        <input type="text" id="address" class="swal2-input" placeholder="Address" style="height:30px;width:268px">
         <select id="gender" class="swal2-input" style="height:30px;width:268px">
           <option value="Nam">Nam</option>
           <option value="Nữ">Nữ</option>
         </select>
-        <input type="password" id="password" class="swal2-input" placeholder="Password" style="height:30px">
-        <input type="password" id="cpassword" class="swal2-input" placeholder="Confirm Password" style="height:30px">
+        <input type="password" id="password" class="swal2-input" placeholder="Password" style="height:30px;width:268px">
+        <input type="password" id="cpassword" class="swal2-input" placeholder="Confirm Password" style="height:30px;width:268px">
         <select id="role" class="swal2-input" style="height:30px;width:268px">
           <option value="ADMIN">ADMIN</option>
           <option value="LECTURER">LECTURER</option>

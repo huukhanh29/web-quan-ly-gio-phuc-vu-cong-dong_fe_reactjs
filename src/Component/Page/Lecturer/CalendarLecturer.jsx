@@ -3,20 +3,28 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Card } from "flowbite-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useStore } from "react-redux";
 import axios from "axios";
 import { setToken } from "../../../store/authSlice";
+import jwt_decode from "jwt-decode";
 
 const localizer = momentLocalizer(moment);
 
-export default function Admin() {
+export default function CalendarLecturer() {
+  const { token } = useStore().getState().auth;
+  const decoded = jwt_decode(token);
+  const id = decoded.id;
   const dispatch = useDispatch();
   const [events, setEvents] = useState([]);
   const fetchData = useCallback(async () => {
     try {
-      const { data } = await axios.get("/activities/get/all");
+      const { data } = await axios.get(`/activities/get/of/${id}`);
+      const activity = data.filter(
+        (item) =>
+          item.status === "Chờ xác nhận" || item.status === "Đã xác nhận"
+      );
       setEvents(
-        data.content.map((activity) => ({
+        activity.map((activity) => ({
           start: activity.startTime,
           end: activity.endTime,
           title: activity.name,
@@ -27,7 +35,7 @@ export default function Admin() {
         dispatch(setToken(""));
       }
     }
-  }, [dispatch]);
+  }, [dispatch, id]);
 
   useEffect(() => {
     document.title = "Danh sách câu hỏi";
@@ -39,9 +47,9 @@ export default function Admin() {
       <Calendar
         localizer={localizer}
         defaultDate={new Date()}
-        views={{ month: true, agenda:true }}
+        views={{ month: true, agenda: true }}
         events={events}
-        style={{ height: "100vh" }}
+        style={{ height: "75vh" }}
       />
     </Card>
   );

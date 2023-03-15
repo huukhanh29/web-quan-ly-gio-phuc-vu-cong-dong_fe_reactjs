@@ -11,7 +11,7 @@ import {
   Pagination,
   Spinner,
   Table,
-  TextInput
+  TextInput,
 } from "flowbite-react";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -43,7 +43,7 @@ export default function ListActivity() {
           searchTerm: searchTerm,
           status: status,
           startTime: startTime ? startTime : null,
-          endTime: endTime ? endTime : null,
+          endTime: endTime ? endTime : null
         },
       });
       setActivities(data.content);
@@ -178,20 +178,20 @@ export default function ListActivity() {
     Swal.fire({
       title: "Thêm hoạt động",
       html: `
-        <textarea type="text" id="name" class="swal2-textarea" style="height:50px;width:350px"
+        <textarea type="text" id="name" class="swal2-textarea" style="height:40px;width:350px"
           placeholder="Tên hoạt động" tooltip="tooltip" title="Tên hoạt động"></textarea>
-        <textarea type="text" id="description" class="swal2-textarea" style="height:50px;width:350px"
+        <textarea type="text" id="description" class="swal2-textarea" style="height:40px;width:350px"
           placeholder="Mô tả" tooltip="tooltip" title="Mô tả"></textarea>
-        <textarea type="text" id="location" class="swal2-textarea" style="height:50px;width:350px"
+        <textarea type="text" id="location" class="swal2-textarea" style="height:40px;width:350px"
           placeholder="Địa điểm" tooltip="tooltip" title="Địa điểm"></textarea>
         <input type="datetime-local" id="startTime" class="swal2-input" tooltip="tooltip" title="Bắt đầu"
-          style="width:350px" />
+          style="height:40px;width:350px" />
         <input type="datetime-local" id="endTime" class="swal2-input" tooltip="tooltip" title="Kết thúc"
-          style="width:350px"/>
+          style="height:40px;width:350px"/>
         <input type="number" id="accumulatedTime" class="swal2-input" tooltip="tooltip" title="Giờ tích lũy"
-          style="width:350px" placeholder="Giờ tích lũy"/>
+          style="height:40px;width:350px" placeholder="Giờ tích lũy"/>
         <select id="activityType" class="swal2-input" tooltip="tooltip" title="Loại hoạt động"
-          style="width:350px">
+          style="height:40px;width:350px">
           ${options}
         </select>
       `,
@@ -202,23 +202,35 @@ export default function ListActivity() {
         const location = Swal.getPopup().querySelector("#location").value;
         const startTime = Swal.getPopup().querySelector("#startTime").value;
         const endTime = Swal.getPopup().querySelector("#endTime").value;
-        const accumulatedTime = Swal.getPopup().querySelector("#accumulatedTime").value;
-        const activityType = Swal.getPopup().querySelector("#activityType").value;
-        const now= new Date();
-        const s= new Date(startTime);
-        const e = new Date(endTime)
-        console.log(s)
+        const accumulatedTime =
+          Swal.getPopup().querySelector("#accumulatedTime").value;
+        const activityType =
+          Swal.getPopup().querySelector("#activityType").value;
+        const now = new Date();
+        const s = new Date(startTime);
+        const e = new Date(endTime);
+        console.log(s);
         if (!name || !location || !accumulatedTime) {
           Swal.showValidationMessage("Vui lòng nhập đủ thông tin");
           return false;
         }
         if (s < now) {
-          Swal.showValidationMessage("Thời gian bắt đầu phải sau thời điểm hiện tại");
+          Swal.showValidationMessage(
+            "Thời gian bắt đầu phải sau thời điểm hiện tại"
+          );
           return false;
         }
-  
+
         if (s >= e) {
-          Swal.showValidationMessage("Thời gian kết thúc phải sau thời gian bắt đầu");
+          Swal.showValidationMessage(
+            "Thời gian kết thúc phải sau thời gian bắt đầu"
+          );
+          return false;
+        }
+        if (e > now) {
+          Swal.showValidationMessage(
+            "Thời gian kết thúc phải trước hoặc bằng hiện tại"
+          );
           return false;
         }
         const body = {
@@ -228,9 +240,9 @@ export default function ListActivity() {
           startTime: startTime,
           endTime: endTime,
           accumulatedTime: accumulatedTime,
-          activityType: activityType
+          activityType: activityType,
         };
-  
+
         return axios
           .post("/activities/create", body)
           .then((response) => {
@@ -240,12 +252,137 @@ export default function ListActivity() {
           })
           .catch((error) => {
             console.log(error);
-            toast.error("Có lỗi xảy ra khi thêm hoạt động")
+            toast.error("Có lỗi xảy ra khi thêm hoạt động");
           });
       },
     });
   };
-
+  //chỉnh sửa
+  const showFormEdit = async (id) => {
+    await getType();
+    const activity = activities.find((item) => item.id === id);
+    const options = type
+      .map(
+        (item) =>
+          `<option value="${item.name}" ${
+            item.name === activity.activityType.name ? "selected" : ""
+          }>${item.name}</option>`
+      )
+      .join("");
+    Swal.fire({
+      title: "Chỉnh sửa hoạt động",
+      html: `
+        <textarea type="text" id="name" class="swal2-textarea" style="height:40px;width:350px"
+          placeholder="Tên hoạt động" tooltip="tooltip" title="Tên hoạt động">${
+            activity.name
+          }</textarea>
+        <textarea type="text" id="description" class="swal2-textarea" style="height:40px;width:350px"
+          placeholder="Mô tả" tooltip="tooltip" title="Mô tả">${
+            activity.description
+          }</textarea>
+        <textarea type="text" id="location" class="swal2-textarea" style="height:40px;width:350px"
+          placeholder="Địa điểm" tooltip="tooltip" title="Địa điểm">${
+            activity.location
+          }</textarea>
+        <input type="datetime-local" id="startTime" class="swal2-input" tooltip="tooltip" title="Bắt đầu"
+          style="height:40px;width:350px" value="${activity.startTime.replace(
+            "Z",
+            ""
+          )}" />
+        <input type="datetime-local" id="endTime" class="swal2-input" tooltip="tooltip" title="Kết thúc"
+          style="height:40px;width:350px" value="${activity.endTime.replace(
+            "Z",
+            ""
+          )}" />
+        <input type="number" id="accumulatedTime" class="swal2-input" tooltip="tooltip" title="Giờ tích lũy"
+          style="height:40px;width:350px" placeholder="Giờ tích lũy" value="${
+            activity.accumulatedTime
+          }" />
+        <select id="activityType" class="swal2-input" tooltip="tooltip" title="Loại hoạt động"
+          style="height:40px;width:350px">
+          ${options}
+        </select>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        const name = Swal.getPopup().querySelector("#name").value;
+        const description = Swal.getPopup().querySelector("#description").value;
+        const location = Swal.getPopup().querySelector("#location").value;
+        const startTime = Swal.getPopup().querySelector("#startTime").value;
+        const endTime = Swal.getPopup().querySelector("#endTime").value;
+        const accumulatedTime =
+          Swal.getPopup().querySelector("#accumulatedTime").value;
+        const activityType =
+          Swal.getPopup().querySelector("#activityType").value;
+        const now = new Date();
+        const s = new Date(startTime);
+        const e = new Date(endTime);
+        if (!name || !location || !accumulatedTime) {
+          Swal.showValidationMessage("Vui lòng nhập đủ thông tin");
+          return false;
+        }
+        if (s >= e) {
+          Swal.showValidationMessage(
+            "Thời gian kết thúc phải sau thời gian bắt đầu"
+          );
+          return false;
+        }
+        if (e < now) {
+          Swal.showValidationMessage("Thời gian kết thúc phải sau hiện tại");
+          return false;
+        }
+        const updatedActivity = {
+          name: name,
+          description: description,
+          location: location,
+          startTime: startTime,
+          endTime: endTime,
+          accumulatedTime: accumulatedTime,
+          activityType: activityType,
+        };
+        return axios
+          .put(`/activities/update/${id}`, updatedActivity)
+          .then((response) => {
+            fetchData();
+            handleSortChange("updatedAt", "DESC");
+            toast.success("Chỉnh sửa thành công");
+          })
+          .catch((error) => {
+            console.log(error);
+            toast.error("Có lỗi xảy ra khi thêm hoạt động");
+          });
+      },
+    });
+  };
+  //xóa
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn muốn hoạt động này?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc3545",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`/activities/delete/${id}`)
+          .then((response) => {
+            // Reload the FAQ data after deleting
+            fetchData();
+            toast.success("Xóa thành công");
+          })
+          .catch((error) => {
+            if (error.response.data.message === "ISUSE") {
+              toast.error("Không thể xóa! Hoạt động đã được đăng ký!");
+            }
+            console.error(error);
+          });
+      }
+    });
+  };
+  
   return activities === null ? (
     <Spinner color="failure" />
   ) : (
@@ -283,7 +420,10 @@ export default function ListActivity() {
           <Badge onClick={() => handleRefresh()} color="gray">
             Refresh
           </Badge>
-          <Badge onClick={() =>  handleSortChange("createdAt", "DESC")} color="failure">
+          <Badge
+            onClick={() => handleSortChange("createdAt", "DESC")}
+            color="failure"
+          >
             Create
           </Badge>
           <Badge color="success">Từ</Badge>
@@ -337,8 +477,8 @@ export default function ListActivity() {
             <Dropdown.Item onClick={() => handleStatusChange("Đang diễn ra")}>
               Đang diễn ra
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => handleStatusChange("Đã diễn ra")}>
-              Đã diễn ra
+            <Dropdown.Item onClick={() => handleStatusChange("Đã kết thúc")}>
+            Đã kết thúc
             </Dropdown.Item>
           </Dropdown>
         </div>
@@ -359,69 +499,73 @@ export default function ListActivity() {
           <Table.HeadCell></Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {activities.map((item, index) => (
-            <Table.Row
-              className="bg-white dark:border-gray-700 dark:bg-gray-800"
-              key={item.id}
-            >
-              <Table.Cell>{index + 1}</Table.Cell>
-              <Table.Cell
-                onClick={() => showFormInfo(item.id)}
-                className="whitespace-normal font-medium text-gray-900 dark:text-white"
-              >
-                {item.name}
-              </Table.Cell>
-              <Table.Cell
-                onClick={() => showFormInfo(item.id)}
-                className="whitespace-normal font-medium text-gray-900 dark:text-white"
-              >
-                {new Date(item.startTime).toLocaleTimeString("en-GB") +
-                  " " +
-                  new Date(item.startTime).toLocaleDateString("en-GB") ?? ""}
-              </Table.Cell>
-              <Table.Cell
-                onClick={() => showFormInfo(item.id)}
-                className="whitespace-normal font-medium text-gray-900 dark:text-white"
-              >
-                {new Date(item.endTime).toLocaleTimeString("en-GB") +
-                  " " +
-                  new Date(item.endTime).toLocaleDateString("en-GB") ?? ""}
-              </Table.Cell>
-              <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
-                <Badge
-                  color={
-                    {
-                      "Sắp diễn ra": "warning",
-                      "Đang diễn ra": "success",
-                      "Đã kết thúc": "failure",
-                    }[item.status]
-                  }
-                  className="flex justify-center"
-                >
-                  {item.status}
-                </Badge>
-              </Table.Cell>
+          {activities.map((item, index) => {
+            // const userActivity = activityOfUser.find((a) => a.id === item.id);
+            // const userActivityId = userActivity ? userActivity.id : null;
 
-              <Table.Cell className="whitespace-normal text-gray-900 dark:text-white">
-                <div className="flex justify-end">
-                  <Button
-                    style={{ height: "30px", width: "30px" }}
-                    //onClick={() => showFormEdit(item.id)}
-                    className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
+            return (
+              <Table.Row
+                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                key={item.id}
+              >
+                <Table.Cell>{index + 1}</Table.Cell>
+                <Table.Cell
+                  onClick={() => showFormInfo(item.id)}
+                  className="whitespace-normal font-medium text-gray-900 dark:text-white"
+                >
+                  {item.name}
+                </Table.Cell>
+                <Table.Cell
+                  onClick={() => showFormInfo(item.id)}
+                  className="whitespace-normal font-medium text-gray-900 dark:text-white"
+                >
+                  {new Date(item.startTime).toLocaleTimeString("en-GB") +
+                    " " +
+                    new Date(item.startTime).toLocaleDateString("en-GB") ?? ""}
+                </Table.Cell>
+                <Table.Cell
+                  onClick={() => showFormInfo(item.id)}
+                  className="whitespace-normal font-medium text-gray-900 dark:text-white"
+                >
+                  {new Date(item.endTime).toLocaleTimeString("en-GB") +
+                    " " +
+                    new Date(item.endTime).toLocaleDateString("en-GB") ?? ""}
+                </Table.Cell>
+                <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
+                  <Badge
+                    color={
+                      {
+                        "Sắp diễn ra": "warning",
+                        "Đang diễn ra": "success",
+                        "Đã kết thúc": "failure",
+                      }[item.status]
+                    }
+                    className="flex justify-center"
                   >
-                    <FontAwesomeIcon icon={faEdit} />
-                  </Button>
-                  <Button
-                    style={{ height: "30px", width: "30px" }}
-                    //onClick={() => handleDelete(item.id)}
-                    className="bg-gradient-to-r from-pink-400 to-orange-500 text-white font-bold py-1 px-4 rounded"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
-                </div>
-              </Table.Cell>
-            </Table.Row>
-          ))}
+                    {item.status}
+                  </Badge>
+                </Table.Cell>
+                <Table.Cell className="whitespace-normal text-gray-900 dark:text-white">
+                  <div className="flex justify-end">
+                    <Button
+                      style={{ height: "30px", width: "30px" }}
+                      onClick={() => showFormEdit(item.id)}
+                      className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </Button>
+                    <Button
+                      style={{ height: "30px", width: "30px" }}
+                      onClick={() => handleDelete(item.id)}
+                      className="bg-gradient-to-r from-pink-400 to-orange-500 text-white font-bold py-1 px-4 rounded"
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                  </div>
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
         </Table.Body>
       </Table>
       <Pagination

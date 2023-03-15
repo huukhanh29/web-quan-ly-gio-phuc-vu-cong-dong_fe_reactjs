@@ -18,6 +18,11 @@ import History from './Component/Page/Student/History/History';
 import Page404 from './Component/Page/Error/404';
 import Profile from './Component/Page/Profile/Profile';
 import ListActivity from './Component/Page/Admin/Activity/ListActivity';
+import ActivityLecturer from './Component/Page/Lecturer/ActivityLecturer';
+import ManagerActivity from './Component/Page/Admin/Activity/ManagerActivity';
+import CalendarAdmin from './Component/Page/Admin/Activity/CalendarAdmin';
+import CalendarLecturer from './Component/Page/Lecturer/CalendarLecturer';
+import { ChartLine } from './Component/Page/Admin/User/ChartLine';
 
 function App() {
   const router = createBrowserRouter([
@@ -80,12 +85,42 @@ function App() {
             {
               path: 'list-activity',
               element: <ListActivity />
+            },
+            {
+              path: 'manager-activity',
+              element: <ManagerActivity />
+            },
+            
+            {
+              path: 'calendar',
+              element: <CalendarAdmin />
+            },
+            
+            {
+              path: 'chartline-chat',
+              element: <ChartLine />
             }
           ]
         },
         {
           path: '/lecturer',
-          element: <ProtectedAuthRoute role="LECTURER"><Lecturer/></ProtectedAuthRoute>
+          element: <ProtectedAuthRoute role="LECTURER">
+            <Outlet />
+          </ProtectedAuthRoute>,
+          children:[
+            {
+              path: '',
+              element: <Lecturer/>
+            },
+            {
+              path: 'list-activity',
+              element: <ActivityLecturer />
+            },
+            {
+              path: 'calendar',
+              element: <CalendarLecturer />
+            }
+          ]
         }
         ,
         {

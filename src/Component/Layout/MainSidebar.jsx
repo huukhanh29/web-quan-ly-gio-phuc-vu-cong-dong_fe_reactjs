@@ -1,9 +1,12 @@
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 import {
+  faCalendar,
+  faCheck,
   faChevronLeft,
   faChevronRight,
   faComment,
   faComments,
+  faLineChart,
   faReply,
   faTasks,
   faUser,
@@ -144,6 +147,65 @@ export default function MainSidebar() {
                     icon={() => <FontAwesomeIcon icon={faTasks} />}
                   >
                     Hoạt động
+                  </Sidebar.Item>
+                  <Sidebar.Item
+                    key={"approve"}
+                    as={Link}
+                    to={"/admin/manager-activity"}
+                    className={
+                      "/admin/manager-activity" === pathname ? activeClassname : ""
+                    }
+                    icon={() => <FontAwesomeIcon icon={faCheck} />}
+                  >
+                    Phê duyệt/Xác nhận
+                  </Sidebar.Item>
+                  <Sidebar.Item
+                    key={"calendar"}
+                    as={Link}
+                    to={"/admin/calendar"}
+                    className={
+                      "/admin/calendar" === pathname ? activeClassname : ""
+                    }
+                    icon={() => <FontAwesomeIcon icon={faCalendar} />}
+                  >
+                    Lịch
+                  </Sidebar.Item>
+                  <Sidebar.Item
+                    key={"chartline"}
+                    as={Link}
+                    to={"/admin/chartline-chat"}
+                    className={
+                      "/admin/chartline-chat" === pathname ? activeClassname : ""
+                    }
+                    icon={() => <FontAwesomeIcon icon={faLineChart} />}
+                  >
+                    Biểu đồ Chat
+                  </Sidebar.Item>
+                </>
+              )}
+              {role === "LECTURER" && (
+                <>
+                  <Sidebar.Item
+                    key={"activitylecturer"}
+                    as={Link}
+                    to={"/lecturer/list-activity"}
+                    className={
+                      "/lecturer/list-activity" === pathname ? activeClassname : ""
+                    }
+                    icon={() => <FontAwesomeIcon icon={faTasks} />}
+                  >
+                    Quản lý hoạt động
+                  </Sidebar.Item>
+                  <Sidebar.Item
+                    key={"calendarl"}
+                    as={Link}
+                    to={"/lecturer/calendar"}
+                    className={
+                      "/lecturer/calendar" === pathname ? activeClassname : ""
+                    }
+                    icon={() => <FontAwesomeIcon icon={faCalendar} />}
+                  >
+                    Lịch
                   </Sidebar.Item>
                 </>
               )}

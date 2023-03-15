@@ -39,18 +39,16 @@ export default function ListFeedback() {
   
   const handleAll =() =>{
     setIsFetchingAll(true);
-    queryParams.userId = null;
   }
   
   const handleMy =() =>{
     setIsFetchingAll(false);
-    queryParams.userId = id;
   }
   
   const fetchData = useCallback(async () => {
     try {
       let url = '/feedback/get/all';
-      if (!isFetchingAll) {
+      if(!isFetchingAll) {
         url += `?userId=${id}`;
       }
       const { data } = await axios.get(url, { params: queryParams });
