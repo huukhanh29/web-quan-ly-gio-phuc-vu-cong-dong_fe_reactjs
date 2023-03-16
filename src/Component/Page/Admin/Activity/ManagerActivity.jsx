@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -18,6 +17,7 @@ import { setToken } from "../../../../store/authSlice";
 import Swal from "sweetalert2";
 import "./Activity.css";
 import { toast } from "react-toastify";
+
 export default function ManagerActivity() {
   const dispatch = useDispatch();
   const activeClassname = "bg-gradient-to-r from-green-300 to-blue-400";
@@ -27,9 +27,12 @@ export default function ManagerActivity() {
   const [sort, setSort] = useState({ sortBy: "", sortDir: "" });
   const [searchTerm, setSearchTerm] = useState("");
   const [status, setStatus] = useState("");
+  const [condition, setCondition] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [useractivity, setUserActivities] = useState([]);
+  const [years, setYears] = useState([]);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const fetchData = useCallback(async () => {
     try {
       const { data } = await axios.get(`/activities/manager/get/all`, {
@@ -42,6 +45,8 @@ export default function ManagerActivity() {
           status: status,
           startTime: startTime ? startTime : null,
           endTime: endTime ? endTime : null,
+          year: currentYear,
+          condition: condition,
         },
       });
       setUserActivities(data.content);
@@ -60,12 +65,28 @@ export default function ManagerActivity() {
     status,
     startTime,
     endTime,
+    currentYear,
+    condition
   ]);
 
+  const getActivityYear = useCallback(async () => {
+    try {
+      const { data } = await axios.get(`/activities/get/years`);
+      setYears(data);
+    } catch (error) {
+      if (error.response.status === 403) {
+        dispatch(setToken(""));
+      }
+    }
+  }, [dispatch]);
   useEffect(() => {
     document.title = "Danh sách hoạt động";
+    getActivityYear();
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, getActivityYear]);
+  const handelChangeYaer = (a) => {
+    setCurrentYear(a);
+  };
   const handlePageSizeChange = (size) => {
     setPageSize(size);
     setCurrentPage(0);
@@ -97,12 +118,56 @@ export default function ManagerActivity() {
     setStatus("");
     setStartTime("");
     setEndTime("");
+    setCondition("");
   };
   const handleStatusChange = (a) => {
     setStatus(a);
     fetchData();
   };
-  //xem chi tiết
+  const handleConditionChange = (a) => {
+    setCondition(a);
+    fetchData();
+  };
+  //xem chi tiết user
+  const showUserActivityInfo = (userId) => {
+    axios
+      .get(`activities/manager/get/user-info/${userId}`)
+      .then((response) => {
+        const data = response.data;
+        Swal.fire({
+          title: "Thông tin",
+          html: `
+          <table class="swal2-table">
+            <tr>
+              <td>Tên</td>
+              <td>${data.name}</td>
+            </tr>
+            <tr>
+              <td>Chức danh</td>
+              <td>${data.job}</td>
+            </tr>
+            <tr>
+              <td>Hoạt động năm nay</td>
+              <td>${data.numActivities}</td>
+            </tr>
+            <tr>
+              <td>Tỉ lệ hoàn thành</td>
+              <td>${data.totalHours}/${data.requiredHours}</td>
+            </tr>
+          </table>
+        `,
+          confirmButtonText: "OK",
+          focusConfirm: false,
+          allowOutsideClick: () => !Swal.isLoading(),
+        });
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 403) {
+          dispatch(setToken(""));
+        }
+      });
+  };
+
   const showFormInfo = (id) => {
     const item = useractivity.find((item) => item.id === id);
     Swal.fire({
@@ -161,11 +226,13 @@ export default function ManagerActivity() {
   //duyệt
   const handleApproved = (id, st) => {
     const item = useractivity.find((item) => item.id === id);
-    const statusActivity = item.activity.status
+    const statusActivity = item.activity.status;
     const data = { status: st };
-    if((st === "Chờ xác nhận" && statusActivity ==="Sắp diễn ra") || 
-    (st === "Đã xác nhận" && statusActivity==="Đã kết thúc")){
-        axios
+    if (
+      (st === "Chờ xác nhận" && statusActivity === "Sắp diễn ra") ||
+      (st === "Đã xác nhận" && statusActivity === "Đã kết thúc")
+    ) {
+      axios
         .post(`/activities/manager/update/status/${id}`, data)
         .then((response) => {
           fetchData();
@@ -174,10 +241,9 @@ export default function ManagerActivity() {
         .catch((error) => {
           console.error(error);
         });
-    }else{
-        toast.error("Không thể duyệt/xác nhận! Hết hạn duyệt/Chưa kết thúc!")
+    } else {
+      toast.error("Không thể duyệt/xác nhận! Hết hạn duyệt/Chưa kết thúc!");
     }
-    
   };
   return useractivity === null ? (
     <Spinner color="failure" />
@@ -209,7 +275,7 @@ export default function ManagerActivity() {
             Refresh
           </Badge>
           <Badge
-            onClick={() => handleSortChange("createdAt", "DESC")}
+            onClick={() => handleSortChange("activity.createdAt", "DESC")}
             color="failure"
           >
             Create
@@ -271,20 +337,67 @@ export default function ManagerActivity() {
           </Dropdown>
         </div>
       </div>
+      <div className="flex justify-center items-center">
+        <div className="flex flex-wrap gap-2 ml-9">
+        <Badge color="warning">Công việc:</Badge>
+          <Dropdown
+            label={condition === "" ? "Tất cả" : status}
+            style={{ height: "21px", width: "150px" }}
+            color="greenToBlue"
+          >
+            <Dropdown.Item onClick={() => handleConditionChange("")}>
+              Tất cả
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handleConditionChange("Chờ duyệt")}>
+              Duyệt
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handleConditionChange("Chờ xác nhận")}>
+              Xác nhận
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handleConditionChange("Đã xác nhận")}>
+              Hoàn thành
+            </Dropdown.Item>
+          </Dropdown>
+
+          <Badge color="warning">Năm:</Badge>
+          <Dropdown
+            label={currentYear}
+            style={{ height: "21px", width: "50px" }}
+            color="greenToBlue"
+          >
+            {years.map((year) => (
+              <Dropdown.Item
+                key={year}
+                value={year}
+                onClick={() => handelChangeYaer(year)}
+              >
+                {year}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+        </div>
+      </div>
       <Table hoverable={true}>
         <Table.Head className={activeClassname}>
           <Table.HeadCell></Table.HeadCell>
-          <Table.HeadCell onClick={() => handleSortChange("activity.name", "ASC")}>
+          <Table.HeadCell
+            onClick={() => handleSortChange("activity.name", "ASC")}
+          >
             Tên hoạt động
           </Table.HeadCell>
-          <Table.HeadCell onClick={() => handleSortChange("activity.startTime", "ASC")}>
+          <Table.HeadCell
+            onClick={() => handleSortChange("activity.startTime", "ASC")}
+          >
             Từ
           </Table.HeadCell>
-          <Table.HeadCell onClick={() => handleSortChange("activity.endTime", "ASC")}>
+          <Table.HeadCell
+            onClick={() => handleSortChange("activity.endTime", "ASC")}
+          >
             Đến
           </Table.HeadCell>
-          <Table.HeadCell onClick={() => handleSortChange("user.name", "ASC")}
-          >Người đăng ký</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("user.name", "ASC")}>
+            Người đăng ký
+          </Table.HeadCell>
           <Table.HeadCell></Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
@@ -323,7 +436,10 @@ export default function ManagerActivity() {
                       "en-GB"
                     ) ?? ""}
                 </Table.Cell>
-                <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
+                <Table.Cell
+                  onClick={() => showUserActivityInfo(item.user.id)}
+                  className="whitespace-normal font-medium text-gray-900 dark:text-white"
+                >
                   {item.user.name}
                 </Table.Cell>
                 <Table.Cell className="whitespace-normal text-gray-900 dark:text-white">

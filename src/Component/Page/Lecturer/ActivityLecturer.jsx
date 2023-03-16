@@ -183,7 +183,6 @@ export default function ActivityLecturer() {
   };
   //đăng ký
   const handleRegister = (activityId) => {
-    //const register = activities.find((item) => item.id === activityId);
     const updatedData = { userId: id, activityId: activityId };
     axios
       .post("/activities/register", updatedData)
@@ -191,6 +190,19 @@ export default function ActivityLecturer() {
         fetchData();
         getActivityOfUser();
         toast.success("Đăng ký thành công");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  //hủy
+  const handleDestroy = (activityId) => {
+    axios
+      .delete(`/activities/manager/destroy/${id}/${activityId}`)
+      .then((response) => {
+        fetchData();
+        getActivityOfUser();
+        toast.success("Hủy thành công");
       })
       .catch((error) => {
         console.error(error);
@@ -300,7 +312,7 @@ export default function ActivityLecturer() {
               Đang diễn ra
             </Dropdown.Item>
             <Dropdown.Item onClick={() => handleStatusChange("Đã kết thúc")}>
-            Đã kết thúc
+              Đã kết thúc
             </Dropdown.Item>
           </Dropdown>
         </div>
@@ -324,7 +336,7 @@ export default function ActivityLecturer() {
           {activities.map((item, index) => {
             const userActivity = activityOfUser.find((a) => a.id === item.id);
             const status = userActivity ? userActivity.status : null;
-           
+
             return (
               <Table.Row
                 className="bg-white dark:border-gray-700 dark:bg-gray-800"
@@ -367,17 +379,15 @@ export default function ActivityLecturer() {
                     {item.status}
                   </Badge>
                 </Table.Cell>
-                <Table.Cell
-                  onClick={
-                    !status && item.status === "Sắp diễn ra"
-                      ? () => handleRegister(item.id)
-                      : item.status !== "Sắp diễn ra"
-                      ? () => showFormInfo(item.id)
-                      : undefined
-                  }
-                  className="whitespace-normal font-medium text-gray-900 dark:text-white"
-                >
+                <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
                   <Badge
+                    onClick={
+                      !status && item.status === "Sắp diễn ra"
+                        ? () => handleRegister(item.id)
+                        : item.status !== "Sắp diễn ra"
+                        ? () => showFormInfo(item.id)
+                        : undefined
+                    }
                     color={
                       {
                         "Đã duyệt": "success",
@@ -386,8 +396,18 @@ export default function ActivityLecturer() {
                     }
                     className="flex justify-center"
                   >
-                    {status ? status : item.status !== "Sắp diễn ra" ? "Xem" : "Đăng ký"}
+                    {status
+                      ? status
+                      : item.status !== "Sắp diễn ra"
+                      ? "Xem"
+                      : "Đăng ký"}
                   </Badge>
+                  {(status === "Chờ duyệt" || status === "Chờ xác nhận") && (
+                    <Badge onClick={() => handleDestroy(item.id)}
+                    color="failure" className="flex justify-center">
+                      Hủy
+                    </Badge>
+                  )}
                 </Table.Cell>
               </Table.Row>
             );

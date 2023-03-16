@@ -143,12 +143,12 @@ export default function Profile() {
           <option value="Nam">Nam</option>
           <option value="Nữ">Nữ</option>
         </select>
-      <input type="text" id="phone" class="swal2-input" placeholder="Điện thoại"
+      <input type="text" style="height:50px;width:268px" id="phone" class="swal2-input" placeholder="Điện thoại"
       value="${users.phone??""}"/>
-      <input type="date" id="dateOfBirth" class="swal2-input" 
+      <input type="date" id="dateOfBirth" class="swal2-input" style="height:50px;width:268px"
       value="${users.date}" style="width:270px"/>
-      <input type="text" id="address" class="swal2-input" placeholder="Địa chỉ"
-      value="${users.address??""}" />
+      <textarea type="text" id="address" class="swal2-input" placeholder="Địa chỉ"
+      style="height:50px;width:268px">${users.address??""}</textarea>
     `
     ,
       confirmButtonText: "Lưu",
@@ -244,7 +244,7 @@ export default function Profile() {
               <h2 className="text-lg leading-6 font-medium text-gray-900">
                 {users.name}
               </h2>
-              <p className="mt-1 text-sm text-gray-500">{users.role ?? ""}</p>
+              <p className="mt-1 text-sm text-gray-500">{users.job ==="" ? users.role :users.job}</p>
             </div>
             <div className="px-4 py-5 sm:p-6">
               <div className="flex">

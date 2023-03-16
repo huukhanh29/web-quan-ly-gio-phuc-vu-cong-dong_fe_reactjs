@@ -100,11 +100,13 @@ export default function ListFaq() {
           .then((response) => {
             // Reload the FAQ data after updating
             fetchData();
-            handleSortChange("updatedAt","DESC");
+            handleSortChange("updatedAt", "DESC");
             toast.success("Chỉnh sửa thành công");
           })
           .catch((error) => {
-            console.error(error);
+            if (error.response.status === 403) {
+              dispatch(setToken(""));
+            }
           });
       }
     });
@@ -139,12 +141,12 @@ export default function ListFaq() {
             toast.success("Thêm thành công");
           })
           .catch((error) => {
-            console.log(error)
+            console.log(error);
           });
       },
     });
   };
-  
+
   //xóa
   const handleDelete = (id) => {
     Swal.fire({
@@ -165,7 +167,9 @@ export default function ListFaq() {
             toast.success("Xóa thành công");
           })
           .catch((error) => {
-            console.error(error);
+            if (error.response.data.message === "IS USE") {
+              toast.error("Không thể xóa! Do đã lưu trữ thống kê!")
+            }
           });
       }
     });
@@ -180,8 +184,7 @@ export default function ListFaq() {
       confirmButtonText: "OK",
       focusConfirm: false,
       allowOutsideClick: () => !Swal.isLoading(),
-      
-    })
+    });
   };
   return faq === null ? (
     <Spinner color="failure" />
@@ -201,13 +204,13 @@ export default function ListFaq() {
           <Button
             className={activeClassname}
             style={{ height: "30px" }}
-            onClick={() => handleSortChange("id","ASC")}
+            onClick={() => handleSortChange("id", "ASC")}
           >
             Tìm kiếm
           </Button>
         </div>
         <Button
-        style={{ height: "30px" }}
+          style={{ height: "30px" }}
           onClick={() => showFormCreate()}
           className="bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold rounded"
         >
@@ -216,46 +219,64 @@ export default function ListFaq() {
         </Button>
       </div>
       <div className="flex justify-center items-center">
-      <div className="flex flex-wrap gap-2 ml-9">
-      <Badge onClick={() => handleRefresh("id")} color="gray">
-          Refresh
-        </Badge>
-        <Badge onClick={() => handleSortChange("id","ASC")} color="info">
-          Id
-        </Badge>
-        <Badge onClick={() => handleSortChange("question", "ASC")} color="success">
-          Question
-        </Badge>
-        <Badge onClick={() => handleSortChange("answer", "ASC")} color="failure">
-          Answer
-        </Badge>
-        <Badge onClick={() => handleSortChange("createdAt", "DESC")} color="warning">
-          Create
-        </Badge>
-        <Badge onClick={() => handleSortChange("uniqueHistoryCount", "DESC")} color="purple">
-          Popular
-        </Badge>
-        <Dropdown label={pageSize} style={{ height: "21px", width : "50px" }} color="greenToBlue">
-          <Dropdown.Item onClick={() => handlePageSizeChange(5)}>
-            5
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => handlePageSizeChange(10)}>
-            10
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => handlePageSizeChange(15)}>
-            15
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => handlePageSizeChange(20)}>
-            20
-          </Dropdown.Item>
-        </Dropdown>
-      </div>
+        <div className="flex flex-wrap gap-2 ml-9">
+          <Badge color="white">Chế độ sắp xếp:</Badge>
+          <Badge onClick={() => handleRefresh("id")} color="failure">
+            Làm mới
+          </Badge>
+          <Badge onClick={() => handleSortChange("id", "ASC")} color="info">
+            Mã số
+          </Badge>
+          <Badge
+            onClick={() => handleSortChange("createdAt", "DESC")}
+            color="warning"
+          >
+            Ngày tạo
+          </Badge>
+          <Badge
+            onClick={() => handleSortChange("updatedAt", "DESC")}
+            color="success"
+          >
+            Ngày cập nhật
+          </Badge>
+          <Badge
+            onClick={() => handleSortChange("uniqueHistoryCount", "DESC")}
+            color="purple"
+          >
+            Hỏi nhiều
+          </Badge>
+          <Badge  color="white">
+            Số hàng: 
+          </Badge>
+          <Dropdown
+            label={pageSize}
+            style={{ height: "21px", width: "50px" }}
+            color="greenToBlue"
+          >
+            <Dropdown.Item onClick={() => handlePageSizeChange(5)}>
+              5
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handlePageSizeChange(10)}>
+              10
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handlePageSizeChange(15)}>
+              15
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handlePageSizeChange(20)}>
+              20
+            </Dropdown.Item>
+          </Dropdown>
+        </div>
       </div>
       <Table hoverable={true}>
         <Table.Head className={activeClassname}>
           <Table.HeadCell></Table.HeadCell>
-          <Table.HeadCell>Câu hỏi</Table.HeadCell>
-          <Table.HeadCell>Trả lời</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("question", "ASC")}>
+            Câu hỏi
+          </Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("answer", "ASC")}>
+            Trả lời
+          </Table.HeadCell>
           <Table.HeadCell></Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
@@ -263,15 +284,18 @@ export default function ListFaq() {
             <Table.Row
               className="bg-white dark:border-gray-700 dark:bg-gray-800"
               key={item.id}
-              
             >
               <Table.Cell>{index + 1}</Table.Cell>
-              <Table.Cell onClick={() => showFormInfo(item.id)}
-              className="whitespace-normal font-medium text-gray-900 dark:text-white">
+              <Table.Cell
+                onClick={() => showFormInfo(item.id)}
+                className="whitespace-normal font-medium text-gray-900 dark:text-white"
+              >
                 {item.question}
               </Table.Cell>
-              <Table.Cell onClick={() => showFormInfo(item.id)}
-              className="whitespace-normal  text-gray-900 dark:text-white">
+              <Table.Cell
+                onClick={() => showFormInfo(item.id)}
+                className="whitespace-normal  text-gray-900 dark:text-white"
+              >
                 {item.answer?.length > 50
                   ? item.answer.slice(0, 50) + "..."
                   : item.answer}
@@ -279,14 +303,14 @@ export default function ListFaq() {
               <Table.Cell className="whitespace-normal text-gray-900 dark:text-white">
                 <div className="flex justify-end">
                   <Button
-                    style={{ height: '30px', width: "30px" }}
+                    style={{ height: "30px", width: "30px" }}
                     onClick={() => showFormEdit(item.id)}
                     className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
                   >
                     <FontAwesomeIcon icon={faEdit} />
                   </Button>
                   <Button
-                  style={{ height: '30px', width: "30px" }}
+                    style={{ height: "30px", width: "30px" }}
                     onClick={() => handleDelete(item.id)}
                     className="bg-gradient-to-r from-pink-400 to-orange-500 text-white font-bold py-1 px-4 rounded"
                   >

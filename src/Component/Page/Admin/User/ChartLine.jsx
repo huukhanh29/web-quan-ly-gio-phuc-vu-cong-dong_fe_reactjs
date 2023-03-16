@@ -54,7 +54,7 @@ export function ChartLine() {
           dispatch(setToken(""));
         }
       });
-  }, []);
+  }, [dispatch]);
   useEffect(() => {
     axios
       .get("/user/chart", { params: { year: currentYear }})

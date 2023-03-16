@@ -1,4 +1,4 @@
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faInfo, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import {
@@ -38,7 +38,7 @@ export default function ListFeedbackAdmin() {
       //console.log(data)
     } catch (error) {
       // if (error.response.status === 403) {
-         dispatch(setToken(""));
+      dispatch(setToken(""));
       //}
     }
   }, [currentPage, dispatch, pageSize, sort, searchTerm]);
@@ -76,9 +76,9 @@ export default function ListFeedbackAdmin() {
     Swal.fire({
       title: "Thêm câu hỏi mới",
       html: `
-      <input type="text" id="name" class="swal2-input" value=${feedbackItem.content} disabled>
-      <textarea type="text" id="question" class="swal2-textarea form-textarea " placeholder="Question"></textarea>
-      <textarea type="text" id="answer" class="swal2-textarea form-textarea" placeholder="Answer"></textarea>`,
+      <textarea type="text" id="name" class="swal2-textarea form-textarea" style="height:80px" disabled>${feedbackItem.content}</textarea>
+      <textarea type="text" id="question" class="swal2-textarea form-textarea " style="height:80px" placeholder="Question"></textarea>
+      <textarea type="text" id="answer" class="swal2-textarea form-textarea" style="height:80px" placeholder="Answer"></textarea>`,
       focusConfirm: false,
       preConfirm: () => {
         const question = Swal.getPopup().querySelector("#question").value;
@@ -90,7 +90,7 @@ export default function ListFeedbackAdmin() {
         const newData = { question, answer };
 
         axios
-          .put(`/feedback/reply/${id}`, newData)
+          .post(`/feedback/reply/${id}`, newData)
           .then((response) => {
             // Reload the FAQ data after creating
             fetchData();
@@ -98,12 +98,25 @@ export default function ListFeedbackAdmin() {
             toast.success("Thêm thành công");
           })
           .catch((error) => {
-            if(error.response.data.message === "Question already exists"){
+            if (error.response.data.message === "Question already exists") {
               toast.warning("Câu hỏi đã tồn tại");
             }
-            console.log(error)
+            console.log(error);
           });
       },
+    });
+  };
+  //thêm mới
+  const handleInfo = (id) => {
+    const feedbackItem = feedback.find((item) => item.id === id);
+    Swal.fire({
+      title: "Thông tin trả lời",
+      html: `
+      <textarea type="text" id="name" class="swal2-textarea form-textarea" style="height:80px" disabled>${feedbackItem.content}</textarea>
+      <textarea type="text" id="question" class="swal2-textarea form-textarea " style="height:80px" placeholder="Question" disabled>${feedbackItem.question}</textarea>
+      <textarea type="text" id="answer" class="swal2-textarea form-textarea" style="height:80px" placeholder="Answer" disabled>${feedbackItem.answer}</textarea>`,
+      focusConfirm: false,
+      allowOutsideClick: () => !Swal.isLoading(),
     });
   };
   //xóa
@@ -126,12 +139,13 @@ export default function ListFeedbackAdmin() {
             toast.success("Xóa thành công");
           })
           .catch((error) => {
+            
             console.error(error);
           });
       }
     });
   };
-  
+
   return feedback === null ? (
     <Spinner color="failure" />
   ) : (
@@ -150,44 +164,57 @@ export default function ListFeedbackAdmin() {
           <Button
             className={activeClassname}
             style={{ height: "30px" }}
-            onClick={() => handleSortChange("id","ASC")}
+            onClick={() => handleSortChange("id", "ASC")}
           >
             Tìm kiếm
           </Button>
         </div>
       </div>
       <div className="flex justify-center items-center">
-      <div className="flex flex-wrap gap-2 ml-9">
-      <Badge onClick={() => handleRefresh("id")} color="gray">
-          Refresh
-        </Badge>
-        <Badge onClick={() => handleSortChange("id","ASC")} color="info">
-          Id
-        </Badge>
-        <Badge onClick={() => handleSortChange("content", "ASC")} color="success">
-          Content
-        </Badge>
-        <Badge onClick={() => handleSortChange("createdAt", "DESC")} color="warning">
-          Create
-        </Badge>
-        <Badge onClick={() => handleSortChange("updatedAt", "DESC")} color="purple">
-          Update
-        </Badge>
-        <Dropdown label={pageSize} style={{ height: "21px", width : "50px" }} color="greenToBlue">
-          <Dropdown.Item onClick={() => handlePageSizeChange(5)}>
-            5
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => handlePageSizeChange(10)}>
-            10
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => handlePageSizeChange(15)}>
-            15
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => handlePageSizeChange(20)}>
-            20
-          </Dropdown.Item>
-        </Dropdown>
-      </div>
+        <div className="flex flex-wrap gap-2 ml-9">
+          <Badge onClick={() => handleRefresh("id")} color="gray">
+            Refresh
+          </Badge>
+          <Badge onClick={() => handleSortChange("id", "ASC")} color="info">
+            Id
+          </Badge>
+          <Badge
+            onClick={() => handleSortChange("content", "ASC")}
+            color="success"
+          >
+            Content
+          </Badge>
+          <Badge
+            onClick={() => handleSortChange("createdAt", "DESC")}
+            color="warning"
+          >
+            Create
+          </Badge>
+          <Badge
+            onClick={() => handleSortChange("updatedAt", "DESC")}
+            color="purple"
+          >
+            Update
+          </Badge>
+          <Dropdown
+            label={pageSize}
+            style={{ height: "21px", width: "50px" }}
+            color="greenToBlue"
+          >
+            <Dropdown.Item onClick={() => handlePageSizeChange(5)}>
+              5
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handlePageSizeChange(10)}>
+              10
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handlePageSizeChange(15)}>
+              15
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handlePageSizeChange(20)}>
+              20
+            </Dropdown.Item>
+          </Dropdown>
+        </div>
       </div>
       <Table hoverable={true}>
         <Table.Head className={activeClassname}>
@@ -205,25 +232,36 @@ export default function ListFeedbackAdmin() {
             >
               <Table.Cell>{index + 1}</Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
-              {item.content}
+                {item.content}
               </Table.Cell>
               <Table.Cell className="whitespace-normal  text-gray-900 dark:text-white">
-              {item.question}
+                {item.question}
               </Table.Cell>
               <Table.Cell className="whitespace-normal  text-gray-900 dark:text-white">
-              {item.name}
+                {item.name}
               </Table.Cell>
               <Table.Cell className="whitespace-normal text-gray-900 dark:text-white">
                 <div className="flex justify-end">
-                <Button
-                    style={{ height: '30px', width: "30px" }}
-                    onClick={() => showFormCreate(item.id)}
-                    className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
-                  >
-                    <FontAwesomeIcon icon={faEdit} />
-                  </Button>
+                  {item.question === null ? (
+                    <Button
+                      style={{ height: "30px", width: "30px" }}
+                      onClick={() => showFormCreate(item.id)}
+                      className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </Button>
+                  ) : (
+                    <Button
+                      style={{ height: "30px", width: "30px" }}
+                      onClick={() => handleInfo(item.id)}
+                      className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
+                    >
+                      <FontAwesomeIcon icon={faInfo} />
+                    </Button>
+                  )}
+
                   <Button
-                  style={{ height: '30px', width: "30px" }}
+                    style={{ height: "30px", width: "30px" }}
                     onClick={() => handleDelete(item.id)}
                     className="bg-gradient-to-r from-pink-400 to-orange-500 text-white font-bold py-1 px-4 rounded"
                   >

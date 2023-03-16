@@ -227,9 +227,9 @@ export default function ListActivity() {
           );
           return false;
         }
-        if (e > now) {
+        if (e < now) {
           Swal.showValidationMessage(
-            "Thời gian kết thúc phải trước hoặc bằng hiện tại"
+            "Thời gian kết thúc phải sau hiện tại"
           );
           return false;
         }

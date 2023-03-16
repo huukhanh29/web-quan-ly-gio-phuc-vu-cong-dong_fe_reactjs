@@ -26,14 +26,14 @@ export function ChartPie() {
   }, [userId, currentYear]);
   useEffect(() => {
     axios
-      .get(`/user/get/academic-year`)
+      .get(`/user/get/academic-year/${userId}`)
       .then((response) => {
-        setYears(response.data.map((a) => a.academicYear));
+        setYears(response.data);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [userId]);
 
   const data = {
     labels: ["Giờ còn thiếu", "Giờ hoàn thành"],

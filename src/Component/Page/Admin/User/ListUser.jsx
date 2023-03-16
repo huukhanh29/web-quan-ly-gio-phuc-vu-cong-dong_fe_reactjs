@@ -26,6 +26,7 @@ export default function ListUser() {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [users, setUsers] = useState([]);
+  const [jobs, setJobs] = useState([]);
   const [sort, setSort] = useState({ sortBy: "", sortDir: "" });
   const [searchTerm, setSearchTerm] = useState("");
   const roles = ["ADMIN", "LECTURER", "STUDENT"];
@@ -44,11 +45,23 @@ export default function ListUser() {
       }
     }
   }, [currentPage, dispatch, pageSize, sort, searchTerm]);
+  const getJob = useCallback(async () => {
+    try {
+      const { data } = await axios.get(`/user/job/get/all`);
+      setJobs(data);
+      console.log(data);
+    } catch (error) {
+      if (error.response.status === 403) {
+        dispatch(setToken(""));
+      }
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     document.title = "Danh sách người dùng";
+    getJob();
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, getJob]);
 
   const handlePageSizeChange = (size) => {
     setPageSize(size);
@@ -78,56 +91,76 @@ export default function ListUser() {
     setCurrentPage(0);
   };
   const showFormCreate = () => {
+    const options = jobs
+      .map((item) => `<option value="${item.name}">${item.name}</option>`)
+      .join("");
+
     Swal.fire({
       title: "Thêm người dùng",
       html: `
-        <input type="text" id="name" class="swal2-input" placeholder="Name" style="height:30px;width:268px">
-        <input type="text" id="username" class="swal2-input" placeholder="Username" style="height:30px;width:268px">
-        <input type="email" id="email" class="swal2-input" placeholder="Email" style="height:30px;width:268px">
-        <input type="text" id="address" class="swal2-input" placeholder="Address" style="height:30px;width:268px">
-        <select id="gender" class="swal2-input" style="height:30px;width:268px">
+        <input type="text" id="name" class="swal2-input" placeholder="Name" style="height:35px;width:395px">
+        <input type="text" id="username" class="swal2-input" placeholder="Username" style="height:35px;width:395px">
+        <input type="email" id="email" class="swal2-input" placeholder="Email" style="height:35px;width:395px">
+        <select id="gender" class="swal2-input" style="height:35px;width:395px">
           <option value="Nam">Nam</option>
           <option value="Nữ">Nữ</option>
         </select>
-        <input type="password" id="password" class="swal2-input" placeholder="Password" style="height:30px;width:268px">
-        <input type="password" id="cpassword" class="swal2-input" placeholder="Confirm Password" style="height:30px;width:268px">
-        <select id="role" class="swal2-input" style="height:30px;width:268px">
+        <input type="password" id="password" class="swal2-input" placeholder="Password" style="height:35px;width:395px">
+        <input type="password" id="cpassword" class="swal2-input" placeholder="Confirm Password" style="height:35px;width:395px">
+        <select id="role" class="swal2-input" style="height:35px;width:395px">
           <option value="ADMIN">ADMIN</option>
           <option value="LECTURER">LECTURER</option>
           <option value="STUDENT">STUDENT</option>
         </select>
+        <select id="job" name="job" class="swal2-input" tooltip="tooltip" title="Chức danh"
+          style="height:35px;width:395px;display:none;text-align:center>
+          ${options}
+        </select>
       `,
       focusConfirm: false,
+      didOpen: () => {
+        const roleSelect = document.getElementById("role");
+        roleSelect.addEventListener("change", () => {
+          const selectedRole = roleSelect.value;
+          const jobSelect = document.getElementById("job");
+          if (selectedRole === "LECTURER") {
+            jobSelect.style.display = "block";
+          } else {
+            jobSelect.style.display = "none";
+          }
+        });},
       preConfirm: () => {
         const name = Swal.getPopup().querySelector("#name").value;
         const username = Swal.getPopup().querySelector("#username").value;
         const email = Swal.getPopup().querySelector("#email").value;
-        const address = Swal.getPopup().querySelector("#address").value;
         const gender = Swal.getPopup().querySelector("#gender").value;
         const password = Swal.getPopup().querySelector("#password").value;
         const cpassword = Swal.getPopup().querySelector("#cpassword").value;
         const role = Swal.getPopup().querySelector("#role").value;
-  
+        let job = Swal.getPopup().querySelector("#job").value;
+        if(role !== "LECTURER"){
+          job = null;
+        }
         // Check if email is valid
         if (!/\S+@\S+\.\S+/.test(email)) {
           Swal.showValidationMessage("Email không hợp lệ");
           return false; // prevent closing the modal
         }
-  
+
         // Check if passwords match
         if (password !== cpassword) {
           Swal.showValidationMessage("Mật khẩu không khớp");
           return false; // prevent closing the modal
         }
-  
+
         // Check if required fields are not empty
-        if (!name || !email || !username || !password || !address || !gender) {
+        if (!name || !email || !username || !password || !gender) {
           Swal.showValidationMessage("Vui lòng nhập đủ thông tin");
           return false; // prevent closing the modal
         }
-  
+
         // Submit the form if all checks pass
-        const newData = { name, username, email, address, gender, password, role };
+        const newData = { name, username, email, gender, password, role, job };
         return axios
           .post("/auth/signup", newData)
           .then((response) => {
@@ -138,7 +171,9 @@ export default function ListUser() {
           .catch((error) => {
             if (error.response.data.message === "ERROR: EMAIL WAS USED") {
               Swal.showValidationMessage("Email đã tồn tại");
-            } else if (error.response.data.message === "ERROR: USERNAME WAS USED") {
+            } else if (
+              error.response.data.message === "ERROR: USERNAME WAS USED"
+            ) {
               Swal.showValidationMessage("Username đã tồn tại");
             } else {
               Swal.showValidationMessage("Có lỗi xảy ra khi thêm người dùng");
@@ -157,7 +192,6 @@ export default function ListUser() {
         fetchData();
         //console.log(res)
         if (res.data.message === "WARNING") {
-
           toast.warning("Không thay đổi");
         } else {
           toast.success("Cập nhật trạng thái thành công");
@@ -208,7 +242,7 @@ export default function ListUser() {
           <Button
             className={activeClassname}
             style={{ height: "30px" }}
-            onClick={() => handleSortChange("id","ASC")}
+            onClick={() => handleSortChange("id", "ASC")}
           >
             Tìm kiếm
           </Button>
@@ -224,38 +258,29 @@ export default function ListUser() {
       </div>
       <div className="flex justify-center items-center">
         <div className="flex flex-wrap gap-2 ml-9">
-          <Badge onClick={() => handleRefresh()} color="gray">
-            Refresh
+        <Badge  color="white">
+            Chế độ sắp xếp: 
+          </Badge>
+          <Badge onClick={() => handleRefresh()} color="failure">
+            Làm mới
           </Badge>
           <Badge onClick={() => handleSortChange("id", "ASC")} color="info">
-            Id
-          </Badge>
-          <Badge
-            onClick={() => handleSortChange("name", "ASC")}
-            color="success"
-          >
-            Name
-          </Badge>
-          <Badge
-            onClick={() => handleSortChange("username", "ASC")}
-            color="failure"
-          >
-            Username
-          </Badge>
-          <Badge onClick={() => handleSortChange("email", "ASC")} color="pink">
-            Email
+            Mã số
           </Badge>
           <Badge
             onClick={() => handleSortChange("createdAt", "DESC")}
             color="warning"
           >
-            Create
+            Ngày tạo
           </Badge>
           <Badge
             onClick={() => handleSortChange("updatedAt", "DESC")}
             color="purple"
           >
-            Update
+            Ngày cập nhật
+          </Badge>
+          <Badge  color="white">
+            Số hàng: 
           </Badge>
           <Dropdown
             label={pageSize}
@@ -281,9 +306,9 @@ export default function ListUser() {
         <Table.Head className={activeClassname}>
           <Table.HeadCell></Table.HeadCell>
           <Table.HeadCell>Ảnh đại diện</Table.HeadCell>
-          <Table.HeadCell>Tên</Table.HeadCell>
-          <Table.HeadCell>Username</Table.HeadCell>
-          <Table.HeadCell>Email</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("name", "ASC")}>Tên</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("username", "ASC")}>Username</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("email", "ASC")}>Email</Table.HeadCell>
           <Table.HeadCell>Quyền</Table.HeadCell>
           <Table.HeadCell>Trạng thái</Table.HeadCell>
         </Table.Head>
@@ -317,12 +342,11 @@ export default function ListUser() {
                     label={item.role}
                     style={{ height: "21px", width: "90px" }}
                     color="white"
-                    
                   >
                     {roles.map((role, index) => (
                       <Dropdown.Item
                         onClick={() => handleRoleChange(item.username, role)}
-                        key ={index+1}
+                        key={index + 1}
                       >
                         {role}
                       </Dropdown.Item>
