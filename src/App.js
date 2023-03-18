@@ -23,6 +23,8 @@ import ManagerActivity from './Component/Page/Admin/Activity/ManagerActivity';
 import CalendarAdmin from './Component/Page/Admin/Activity/CalendarAdmin';
 import CalendarLecturer from './Component/Page/Lecturer/CalendarLecturer';
 import { ChartLine } from './Component/Page/Admin/User/ChartLine';
+import { ChartPie } from './Component/Page/Lecturer/ChartPie';
+import Notification from './Component/Page/Notification/Notification';
 
 function App() {
   const router = createBrowserRouter([
@@ -119,6 +121,10 @@ function App() {
             {
               path: 'calendar',
               element: <CalendarLecturer />
+            },
+            {
+              path: 'chartpie-activity',
+              element: <ChartPie />
             }
           ]
         }
@@ -127,6 +133,10 @@ function App() {
           path: '/profile',
           element: <Profile />
         },
+        {
+          path: '/message',
+          element: <Notification />
+        }
       ]
     },
     {

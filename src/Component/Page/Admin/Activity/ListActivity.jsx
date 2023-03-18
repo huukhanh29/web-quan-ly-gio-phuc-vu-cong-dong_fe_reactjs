@@ -43,7 +43,7 @@ export default function ListActivity() {
           searchTerm: searchTerm,
           status: status,
           startTime: startTime ? startTime : null,
-          endTime: endTime ? endTime : null
+          endTime: endTime ? endTime : null,
         },
       });
       setActivities(data.content);
@@ -228,9 +228,7 @@ export default function ListActivity() {
           return false;
         }
         if (e < now) {
-          Swal.showValidationMessage(
-            "Thời gian kết thúc phải sau hiện tại"
-          );
+          Swal.showValidationMessage("Thời gian kết thúc phải sau hiện tại");
           return false;
         }
         const body = {
@@ -382,7 +380,7 @@ export default function ListActivity() {
       }
     });
   };
-  
+
   return activities === null ? (
     <Spinner color="failure" />
   ) : (
@@ -417,14 +415,15 @@ export default function ListActivity() {
       </div>
       <div className="flex justify-center items-center">
         <div className="flex flex-wrap gap-2 ml-9">
-          <Badge onClick={() => handleRefresh()} color="gray">
-            Refresh
+          <Badge color="white">Chế độ sắp xếp:</Badge>
+          <Badge onClick={() => handleRefresh()} color="failure">
+            Làm mới
           </Badge>
           <Badge
             onClick={() => handleSortChange("createdAt", "DESC")}
-            color="failure"
+            color="purple"
           >
-            Create
+            Ngày tạo
           </Badge>
           <Badge color="success">Từ</Badge>
           <TextInput
@@ -444,6 +443,7 @@ export default function ListActivity() {
             value={endTime}
             onChange={handleEndTimeChange}
           />
+          <Badge color="white">Số hàng:</Badge>
           <Dropdown
             label={pageSize}
             style={{ height: "21px", width: "50px" }}
@@ -462,6 +462,10 @@ export default function ListActivity() {
               20
             </Dropdown.Item>
           </Dropdown>
+        </div>
+      </div>
+      <div className="flex justify-center items-center">
+        <div className="flex flex-wrap ">
           <Badge color="warning">Trạng thái:</Badge>
           <Dropdown
             label={status === "" ? "Tất cả" : status}
@@ -478,11 +482,12 @@ export default function ListActivity() {
               Đang diễn ra
             </Dropdown.Item>
             <Dropdown.Item onClick={() => handleStatusChange("Đã kết thúc")}>
-            Đã kết thúc
+              Đã kết thúc
             </Dropdown.Item>
           </Dropdown>
         </div>
       </div>
+
       <Table hoverable={true}>
         <Table.Head className={activeClassname}>
           <Table.HeadCell></Table.HeadCell>

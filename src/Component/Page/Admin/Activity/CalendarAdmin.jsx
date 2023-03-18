@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Card } from "flowbite-react";
+import { Card, Label } from "flowbite-react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { setToken } from "../../../../store/authSlice";
@@ -36,12 +36,13 @@ export default function CalendarAdmin() {
 
   return (
     <Card>
+       <Label className="text-xl">Lịch trình hoạt động</Label>
       <Calendar
         localizer={localizer}
         defaultDate={new Date()}
         views={{ month: true, agenda:true }}
         events={events}
-        style={{ height: "75vh" }}
+        style={{ height: "70vh" }}
       />
     </Card>
   );

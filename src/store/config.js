@@ -8,7 +8,7 @@ import persistStore from "redux-persist/es/persistStore";
 const persistConfig = {
     key: "app",
     storage,
-    whitelist: ["token","avatar"],
+    whitelist: ["token","avatar","message"],
     stateReconciler: autoMergeLevel2
 }
 const persistedReducer = persistReducer(persistConfig, authReducer)

@@ -5,7 +5,9 @@ const initialState = {
     token:"",
     authorized:false,
     sidebar:true,
-    avatar:null
+    avatar:null,
+    message: null,
+    check: false
   };
   export const authSlice = createSlice({
     name: "auth",  // Tên của slice, mỗi slice đặt 1 tên khác nhau để phân biệt
@@ -36,10 +38,17 @@ const initialState = {
       },
       setAvatar:(state, action)=>{
         state.avatar = action.payload;
+      },
+      setMesage:(state, action)=>{
+        state.message = action.payload;
+      },
+      setCheck:(state, action)=>{
+        state.check = action.payload;
       }
     }
   }
 );
-  export const { setLoginInfo, logOut, setAuthorized, setToken, setSidebar, setAvatar } = authSlice.actions;
+  export const { setLoginInfo, logOut, setAuthorized, setMesage,setCheck,
+    setToken, setSidebar, setAvatar } = authSlice.actions;
   export default authSlice.reducer;
 

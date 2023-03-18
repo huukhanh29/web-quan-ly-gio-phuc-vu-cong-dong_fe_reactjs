@@ -12,14 +12,17 @@ import {
   TextInput,
 } from "flowbite-react";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useStore } from "react-redux";
 import { setToken } from "../../../../store/authSlice";
 import Swal from "sweetalert2";
 import "./Activity.css";
 import { toast } from "react-toastify";
-
+import jwt_decode from "jwt-decode";
 export default function ManagerActivity() {
   const dispatch = useDispatch();
+  const { token } = useStore().getState().auth;
+  const decoded = jwt_decode(token);
+  const roleCheck = decoded.role[0].authority;
   const activeClassname = "bg-gradient-to-r from-green-300 to-blue-400";
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -66,7 +69,7 @@ export default function ManagerActivity() {
     startTime,
     endTime,
     currentYear,
-    condition
+    condition,
   ]);
 
   const getActivityYear = useCallback(async () => {
@@ -112,7 +115,7 @@ export default function ManagerActivity() {
   };
   const handleRefresh = () => {
     setSearchTerm("");
-    setSort({ sortBy: "id", sortDir: "ASC" });
+    setSort({ sortBy: "activity.createdAt", sortDir: "DESC" });
     setPageSize(10);
     setCurrentPage(0);
     setStatus("");
@@ -245,6 +248,18 @@ export default function ManagerActivity() {
       toast.error("Không thể duyệt/xác nhận! Hết hạn duyệt/Chưa kết thúc!");
     }
   };
+  //hủy
+  const handleDestroy = (userId, activityId) => {
+    axios
+      .delete(`/activities/manager/destroy/${userId}/${activityId}`)
+      .then((response) => {
+        fetchData();
+        toast.success("Hủy thành công");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   return useractivity === null ? (
     <Spinner color="failure" />
   ) : (
@@ -271,14 +286,15 @@ export default function ManagerActivity() {
       </div>
       <div className="flex justify-center items-center">
         <div className="flex flex-wrap gap-2 ml-9">
-          <Badge onClick={() => handleRefresh()} color="gray">
-            Refresh
+          <Badge color="white">Chế độ sắp xếp:</Badge>
+          <Badge onClick={() => handleRefresh()} color="failure">
+            Làm mới
           </Badge>
           <Badge
             onClick={() => handleSortChange("activity.createdAt", "DESC")}
-            color="failure"
+            color="purple"
           >
-            Create
+            Ngày tạo
           </Badge>
           <Badge color="success">Từ</Badge>
           <TextInput
@@ -316,6 +332,10 @@ export default function ManagerActivity() {
               20
             </Dropdown.Item>
           </Dropdown>
+        </div>
+      </div>
+      <div className="flex justify-center items-center">
+        <div className="flex flex-wrap gap-2 ml-9">
           <Badge color="warning">Trạng thái:</Badge>
           <Dropdown
             label={status === "" ? "Tất cả" : status}
@@ -335,13 +355,9 @@ export default function ManagerActivity() {
               Đã kết thúc
             </Dropdown.Item>
           </Dropdown>
-        </div>
-      </div>
-      <div className="flex justify-center items-center">
-        <div className="flex flex-wrap gap-2 ml-9">
-        <Badge color="warning">Công việc:</Badge>
+          <Badge color="warning">Công việc:</Badge>
           <Dropdown
-            label={condition === "" ? "Tất cả" : status}
+            label={condition === "" ? "Tất cả" : condition}
             style={{ height: "21px", width: "150px" }}
             color="greenToBlue"
           >
@@ -351,7 +367,9 @@ export default function ManagerActivity() {
             <Dropdown.Item onClick={() => handleConditionChange("Chờ duyệt")}>
               Duyệt
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => handleConditionChange("Chờ xác nhận")}>
+            <Dropdown.Item
+              onClick={() => handleConditionChange("Chờ xác nhận")}
+            >
               Xác nhận
             </Dropdown.Item>
             <Dropdown.Item onClick={() => handleConditionChange("Đã xác nhận")}>
@@ -362,7 +380,7 @@ export default function ManagerActivity() {
           <Badge color="warning">Năm:</Badge>
           <Dropdown
             label={currentYear}
-            style={{ height: "21px", width: "50px" }}
+            style={{ height: "21px", width: "60px" }}
             color="greenToBlue"
           >
             {years.map((year) => (
@@ -443,35 +461,49 @@ export default function ManagerActivity() {
                   {item.user.name}
                 </Table.Cell>
                 <Table.Cell className="whitespace-normal text-gray-900 dark:text-white">
-                  <div className="flex justify-end">
-                    {item.status === "Chờ duyệt" && (
-                      <Button
-                        style={{ height: "30px", width: "100px" }}
-                        onClick={() => handleApproved(item.id, "Chờ xác nhận")}
-                        className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
-                      >
-                        Duyệt
-                      </Button>
-                    )}
-                    {item.status === "Chờ xác nhận" && (
-                      <Button
-                        style={{ height: "30px", width: "100px" }}
-                        onClick={() => handleApproved(item.id, "Đã xác nhận")}
-                        className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
-                      >
-                        Xác nhận
-                      </Button>
-                    )}
-                    {item.status === "Đã xác nhận" && (
-                      <Button
-                        style={{ height: "30px", width: "100px" }}
-                        //onClick={() => handleApproved(item.id, "Chờ xác nhận")}
-                        className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
-                      >
-                        Xong
-                      </Button>
-                    )}
-                  </div>
+                  {item.status === "Chờ duyệt" && (
+                    <Button
+                      style={{ height: "30px", width: "130px" }}
+                      onClick={() => handleApproved(item.id, "Chờ xác nhận")}
+                      className="flex justify-center"
+                      gradientDuoTone="cyanToBlue"
+                    >
+                      Duyệt
+                    </Button>
+                  )}
+                  {item.status === "Chờ xác nhận" && (
+                    <Button
+                      style={{ height: "30px", width: "130px" }}
+                      onClick={() => handleApproved(item.id, "Đã xác nhận")}
+                      className="flex justify-center"
+                      gradientDuoTone="redToYellow"
+                    >
+                      Xác nhận
+                    </Button>
+                  )}
+                  {item.status === "Đã xác nhận" && (
+                    <Button
+                      style={{ height: "30px", width: "130px" }}
+                      className="flex justify-center"
+                      gradientDuoTone="tealToLime"
+                    >
+                      Xong
+                    </Button>
+                  )}
+                  {(item.status === "Chờ duyệt" ||
+                    (item.status === "Chờ xác nhận" &&
+                      roleCheck === "ADMIN")) && (
+                    <Button
+                      onClick={() =>
+                        handleDestroy(item.user.id, item.activity.id)
+                      }
+                      style={{ width: "130px", height: "30px" }}
+                      gradientDuoTone="pinkToOrange"
+                      className="flex justify-center mt-1"
+                    >
+                      Hủy
+                    </Button>
+                  )}
                 </Table.Cell>
               </Table.Row>
             );

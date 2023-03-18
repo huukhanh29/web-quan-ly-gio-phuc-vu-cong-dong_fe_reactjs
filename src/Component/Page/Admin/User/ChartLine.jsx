@@ -11,7 +11,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import axios from "axios";
-import { Card, Dropdown, Label, Spinner } from "flowbite-react";
+import { Card, Dropdown, Spinner } from "flowbite-react";
 import { useDispatch } from "react-redux";
 import { setToken } from "../../../../store/authSlice";
 
@@ -33,7 +33,10 @@ export const options = {
     },
     title: {
       display: true,
-      text: "Chart.js Line Chart",
+      text: "Biểu đồ tỉ lệ chat",
+      font: {
+        size: 20,
+      },
     },
   },
 };
@@ -67,7 +70,7 @@ export function ChartLine() {
           labels,
           datasets: [
             {
-              label: "Dataset 1",
+              label: "Số lượt hỏi",
               data: values,
               fill: false,
               borderColor: "rgb(255, 99, 132)",
@@ -84,9 +87,11 @@ export function ChartLine() {
     <Spinner color="failure" />
   ) : (
     <Card>
-      <div className="flex justify-between items-center">
-        <Label className="text-xl">Biểu đồ tỉ lệ chat</Label>
-        <Dropdown
+      <div className="flex">
+        <div
+          className="flex flex-wrap"
+        >
+          <Dropdown
           label={currentYear}
           style={{ height: "21px", width: "150px" }}
           color="greenToBlue"
@@ -97,22 +102,10 @@ export function ChartLine() {
             </Dropdown.Item>
           ))}
         </Dropdown>
-      </div>
-      <div className="flex">
-        <div
-          className="flex flex-wrap"
-        >
-          <Label>Chỉ tiêu: {chartData.requiredHours} giờ</Label>
-          {chartData.requiredHours -chartData.totalHours <0 &&(
-            <Label className="ml-5">Vượt chỉ tiêu: {chartData.totalHours-chartData.requiredHours} giờ</Label>
-          )}
-          {chartData.missHours !== 0 &&(
-            <Label className="ml-5">Còn thiếu: {chartData.missHours} giờ</Label>
-          )}
         </div>
       </div>
 
-          <Line options={options} data={chartData} width={80} height={35} />
+          <Line options={options} data={chartData} width={80} height={30} />
     </Card>
   );
 }

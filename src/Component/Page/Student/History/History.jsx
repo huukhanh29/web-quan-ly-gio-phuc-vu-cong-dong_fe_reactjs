@@ -112,14 +112,15 @@ export default function History() {
       </div>
       <div className="flex justify-center items-center">
       <div className="flex flex-wrap gap-2 ml-9">
-      <Badge onClick={() => handleRefresh("id")} color="gray">
-          Refresh
-        </Badge>
+      <Badge color="white">Chế độ sắp xếp:</Badge>
+          <Badge onClick={() => handleRefresh()} color="failure">
+            Làm mới
+          </Badge>
         <Badge onClick={() => handleSortChange("id","ASC")} color="info">
-          Id
+          Mã số
         </Badge>
         <Badge onClick={() => handleSortChange("createdAt", "DESC")} color="warning">
-          Create
+          Ngày tạo
         </Badge>
         <Dropdown label={pageSize} style={{ height: "21px", width : "50px" }} color="greenToBlue">
           <Dropdown.Item onClick={() => handlePageSizeChange(5)}>
@@ -140,8 +141,8 @@ export default function History() {
       <Table hoverable={true}>
         <Table.Head className={activeClassname}>
           <Table.HeadCell></Table.HeadCell>
-          <Table.HeadCell>Câu hỏi</Table.HeadCell>
-          <Table.HeadCell>Trả lời</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("faq.question","ASC")}>Câu hỏi</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("faq.answer","ASC")}>Trả lời</Table.HeadCell>
           <Table.HeadCell>Thời gian</Table.HeadCell>
           <Table.HeadCell></Table.HeadCell>
         </Table.Head>

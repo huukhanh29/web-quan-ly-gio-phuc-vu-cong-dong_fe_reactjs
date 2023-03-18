@@ -13,11 +13,12 @@ import {
   TextInput,
 } from "flowbite-react";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch} from "react-redux";
 import { setToken } from "../../../../store/authSlice";
 import Swal from "sweetalert2";
 import "./Sweet.css";
 import { toast } from "react-toastify";
+
 export default function ListFeedbackAdmin() {
   const dispatch = useDispatch();
   const activeClassname = "bg-gradient-to-r from-green-300 to-blue-400";
@@ -74,7 +75,7 @@ export default function ListFeedbackAdmin() {
   const showFormCreate = (id) => {
     const feedbackItem = feedback.find((item) => item.id === id);
     Swal.fire({
-      title: "Thêm câu hỏi mới",
+      title: "Trả lời phản hồi",
       html: `
       <textarea type="text" id="name" class="swal2-textarea form-textarea" style="height:80px" disabled>${feedbackItem.content}</textarea>
       <textarea type="text" id="question" class="swal2-textarea form-textarea " style="height:80px" placeholder="Question"></textarea>
@@ -145,7 +146,33 @@ export default function ListFeedbackAdmin() {
       }
     });
   };
-
+  //xóa tất cả
+  const handleDeleteAll = () => {
+    Swal.fire({
+      title: "Bạn có chắc chắn muốn xóa tất cả?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc3545",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Xóa",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`/feedback/delete/all`)
+          .then((response) => {
+            fetchData();
+            toast.success("Đã xóa tất cả các phản hồi đã trả lời");
+          })
+          .catch((error) => {
+            console.log(error);
+            if (error.response.data.message === "NOT FOUND") {
+              toast.warning("Không có phản hồi đã trả lời!");
+            }
+          });
+      }
+    });
+  };
   return feedback === null ? (
     <Spinner color="failure" />
   ) : (
@@ -172,29 +199,34 @@ export default function ListFeedbackAdmin() {
       </div>
       <div className="flex justify-center items-center">
         <div className="flex flex-wrap gap-2 ml-9">
-          <Badge onClick={() => handleRefresh("id")} color="gray">
-            Refresh
+        <Button
+              className="bg-red-500 text-white rounded"
+              style={{ height: "21px", width: "120px" }}
+              onClick={handleDeleteAll}
+            >
+              Xóa tất cả
+            </Button>
+        <Badge color="white">Chế độ sắp xếp:</Badge>
+          <Badge onClick={() => handleRefresh("id")} color="failure">
+            Làm mới
           </Badge>
           <Badge onClick={() => handleSortChange("id", "ASC")} color="info">
-            Id
-          </Badge>
-          <Badge
-            onClick={() => handleSortChange("content", "ASC")}
-            color="success"
-          >
-            Content
+            Mã số
           </Badge>
           <Badge
             onClick={() => handleSortChange("createdAt", "DESC")}
             color="warning"
           >
-            Create
+            Ngày tạo
           </Badge>
           <Badge
             onClick={() => handleSortChange("updatedAt", "DESC")}
             color="purple"
           >
-            Update
+            Ngày cập nhật
+          </Badge>
+          <Badge  color="white">
+            Số hàng: 
           </Badge>
           <Dropdown
             label={pageSize}
@@ -219,9 +251,9 @@ export default function ListFeedbackAdmin() {
       <Table hoverable={true}>
         <Table.Head className={activeClassname}>
           <Table.HeadCell></Table.HeadCell>
-          <Table.HeadCell>Nội dung</Table.HeadCell>
-          <Table.HeadCell>Từ khóa</Table.HeadCell>
-          <Table.HeadCell>Người gửi</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("content", "ASC")}>Nội dung</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("faq.question", "ASC")}>Từ khóa</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("user.name", "ASC")}>Người gửi</Table.HeadCell>
           <Table.HeadCell></Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">

@@ -219,6 +219,7 @@ export default function Profile() {
                 bordered={true}
                 color="pink"
                 onClick={handleAvatarPreview}
+                
               />
 
               <input

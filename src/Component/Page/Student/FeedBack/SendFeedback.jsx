@@ -38,12 +38,12 @@ function SendFeedback() {
     <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
       <div id="textarea">
         <div className="mb-2 block">
-          <Label htmlFor="content" value="Your message" className="text-xl" />
+          <Label htmlFor="content" value="Phản hồi chat" className="text-xl" />
         </div>
         <Textarea
           id="content"
           name="content"
-          placeholder="Leave a comment..."
+          placeholder="Nhập tin nhắn vào đây..."
           rows={4}
           value={formik.values.content}
           onChange={formik.handleChange}
@@ -56,7 +56,7 @@ function SendFeedback() {
         )}
       </div>
       <Button gradientDuoTone="greenToBlue" type="submit">
-        Send Feedback
+        Gửi phản hồi
       </Button>
     </form>
     </Card>

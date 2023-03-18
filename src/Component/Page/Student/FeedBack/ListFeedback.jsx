@@ -29,26 +29,29 @@ export default function ListFeedback() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isFetchingAll, setIsFetchingAll] = useState(true);
 
-  const queryParams = useMemo(() => ({
-    page: currentPage,
-    size: pageSize,
-    sortBy: sort.sortBy,
-    sortDir: sort.sortDir,
-    searchTerm: searchTerm,
-  }), [currentPage, pageSize, sort.sortBy, sort.sortDir, searchTerm]);
-  
-  const handleAll =() =>{
+  const queryParams = useMemo(
+    () => ({
+      page: currentPage,
+      size: pageSize,
+      sortBy: sort.sortBy,
+      sortDir: sort.sortDir,
+      searchTerm: searchTerm,
+    }),
+    [currentPage, pageSize, sort.sortBy, sort.sortDir, searchTerm]
+  );
+
+  const handleAll = () => {
     setIsFetchingAll(true);
-  }
-  
-  const handleMy =() =>{
+  };
+
+  const handleMy = () => {
     setIsFetchingAll(false);
-  }
-  
+  };
+
   const fetchData = useCallback(async () => {
     try {
-      let url = '/feedback/get/all';
-      if(!isFetchingAll) {
+      let url = "/feedback/get/all";
+      if (!isFetchingAll) {
         url += `?userId=${id}`;
       }
       const { data } = await axios.get(url, { params: queryParams });
@@ -60,7 +63,6 @@ export default function ListFeedback() {
       }
     }
   }, [dispatch, isFetchingAll, id, queryParams]);
-  
 
   useEffect(() => {
     document.title = "Danh sách phản hồi";
@@ -95,9 +97,25 @@ export default function ListFeedback() {
   ) : (
     <Card>
       <div className="flex justify-between items-center">
-        <Label className="text-xl">Danh sách câu hỏi</Label>
-        
+        <Label className="text-xl">Danh sách phản hồi</Label>
+
         <div className="flex items-center">
+          <Button.Group className="mr-7">
+            <Button
+              onClick={handleAll}
+              color="gray"
+              style={{ height: "30px", width: "100px" }}
+            >
+              Tất cả
+            </Button>
+            <Button
+              onClick={handleMy}
+              color="gray"
+              style={{ height: "30px", width: "100px" }}
+            >
+              Của tôi
+            </Button>
+          </Button.Group>
           <TextInput
             type="text"
             placeholder="Tìm kiếm"
@@ -106,56 +124,32 @@ export default function ListFeedback() {
             className="py-1 mr-2"
             style={{ height: "30px", width: "350px" }}
           />
-          
+
           <Button
             className={activeClassname}
             style={{ height: "30px" }}
-            onClick={() => handleSortChange("id","ASC")}
+            onClick={() => handleSortChange("id", "ASC")}
           >
             Tìm kiếm
           </Button>
         </div>
       </div>
       <div className="flex justify-center items-center">
-        
         <div className="flex flex-wrap gap-2 ml-9">
-          <Badge onClick={() => handleRefresh("id")} color="gray">
-            Refresh
-          </Badge>
-          <Badge
-            onClick={handleAll}
-            color="failure"
-          >
-            All
-          </Badge>
-          <Badge
-            onClick={handleMy}
-            color="warning"
-          >
-            Myself
+          <Badge color="white">Chế độ sắp xếp:</Badge>
+          <Badge onClick={() => handleRefresh()} color="failure">
+            Làm mới
           </Badge>
           <Badge onClick={() => handleSortChange("id", "ASC")} color="info">
-            Id
+            Mã số
           </Badge>
-          <Badge
-            onClick={() => handleSortChange("content", "ASC")}
-            color="success"
-          >
-            Content
-          </Badge>
-          
           <Badge
             onClick={() => handleSortChange("createdAt", "DESC")}
-            color="pink"
+            color="success"
           >
-            Create
+            Ngày tạo
           </Badge>
-          <Badge
-            onClick={() => handleSortChange("updatedAt", "DESC")}
-            color="purple"
-          >
-            Update
-          </Badge>
+          <Badge color="white">Số hàng:</Badge>
           <Dropdown
             label={pageSize}
             style={{ height: "21px", width: "50px" }}
@@ -179,8 +173,14 @@ export default function ListFeedback() {
       <Table hoverable={true}>
         <Table.Head className={activeClassname}>
           <Table.HeadCell></Table.HeadCell>
-          <Table.HeadCell>Nội dung</Table.HeadCell>
-          <Table.HeadCell>Từ khóa</Table.HeadCell>
+          <Table.HeadCell onClick={() => handleSortChange("content", "ASC")}>
+            Nội dung
+          </Table.HeadCell>
+          <Table.HeadCell
+            onClick={() => handleSortChange("faq.question", "ASC")}
+          >
+            Từ khóa
+          </Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
           {feedback.map((item, index) => (

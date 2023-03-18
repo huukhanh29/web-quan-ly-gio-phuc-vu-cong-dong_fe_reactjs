@@ -8,17 +8,22 @@ import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { setToken } from "../../store/authSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faKey, faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faKey,
+  faMessage,
+  faSignOut,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
-import bcrypt from "bcryptjs-react";
 
 export default function Header() {
   const { token } = useStore().getState().auth;
   const decoded = jwt_decode(token);
-  const id = decoded.id;
+  const { id } = decoded;
+  const role = decoded.role[0].authority
   const dispatch = useDispatch();
-  const avatar = useSelector((state) => state.auth.avatar);
+  const { avatar, message } = useSelector((state) => state.auth);
   const [users, setUsers] = useState(null);
   const fetchData = useCallback(async () => {
     try {
@@ -33,6 +38,7 @@ export default function Header() {
       }
     }
   }, [id, dispatch]);
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -79,22 +85,21 @@ export default function Header() {
           .then((response) => {
             // Reload the user data after changing password
             fetchData();
-            dispatch(setToken(response.data.token))
-            console(response)
+            dispatch(setToken(response.data.token));
+            console(response);
             toast.success("Đổi mật khẩu thành công");
           })
           .catch((error) => {
             if (error.response.data.message === "NOTMATCH") {
               //oldPasswordInput.classList.add("swal2-inputerror");
-              Swal.showValidationMessage(`Mật khẩu cũ không đúng`); 
+              Swal.showValidationMessage(`Mật khẩu cũ không đúng`);
               //return Promise.reject();
             }
-            
           });
       },
     });
   };
- 
+
   return users === null ? (
     <Spinner color="failure" />
   ) : (
@@ -115,6 +120,8 @@ export default function Header() {
               alt="User settings"
               img={basUrl + "files/" + (avatar || users.avatar)}
               rounded={true}
+              status={message !== null ? "busy" : ""}
+              statusPosition="top-right"
             />
           }
         >
@@ -124,6 +131,21 @@ export default function Header() {
               {users.email}
             </span>
           </Dropdown.Header>
+          {(role === "STUDENT" || role === "LECTURER") && (
+            <Dropdown.Item
+              icon={() => <FontAwesomeIcon className="mr-2" icon={faMessage} />}
+            >
+              <Link className="w-full relative inline-flex items-center "
+               to={`/message`}>
+                  Thông báo
+                  <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -right-2 dark:border-gray-900">
+                    {message ??"0"}
+                  </div>
+                
+              </Link>
+            </Dropdown.Item>
+          )}
+
           <Dropdown.Item
             icon={() => <FontAwesomeIcon className="mr-2" icon={faUser} />}
           >

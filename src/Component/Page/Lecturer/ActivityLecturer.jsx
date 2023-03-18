@@ -23,6 +23,7 @@ export default function ActivityLecturer() {
   const { token } = useStore().getState().auth;
   const decoded = jwt_decode(token);
   const id = decoded.id;
+  const roleCheck = decoded.role[0].authority;
   const activeClassname = "bg-gradient-to-r from-green-300 to-blue-400";
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -251,14 +252,9 @@ export default function ActivityLecturer() {
       </div>
       <div className="flex justify-center items-center">
         <div className="flex flex-wrap gap-2 ml-9">
-          <Badge onClick={() => handleRefresh()} color="gray">
-            Refresh
-          </Badge>
-          <Badge
-            onClick={() => handleSortChange("createdAt", "DESC")}
-            color="failure"
-          >
-            Create
+        <Badge color="white">Chế độ sắp xếp:</Badge>
+          <Badge onClick={() => handleRefresh()} color="failure">
+            Làm mới
           </Badge>
           <Badge color="success">Từ</Badge>
           <TextInput
@@ -278,6 +274,7 @@ export default function ActivityLecturer() {
             value={endTime}
             onChange={handleEndTimeChange}
           />
+          <Badge color="white">Số hàng:</Badge>
           <Dropdown
             label={pageSize}
             style={{ height: "21px", width: "50px" }}
@@ -366,7 +363,7 @@ export default function ActivityLecturer() {
                     new Date(item.endTime).toLocaleDateString("en-GB") ?? ""}
                 </Table.Cell>
                 <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
-                  <Badge
+                  <Badge style={{width:"100px", height:"21px"}}
                     color={
                       {
                         "Sắp diễn ra": "warning",
@@ -380,7 +377,8 @@ export default function ActivityLecturer() {
                   </Badge>
                 </Table.Cell>
                 <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
-                  <Badge
+                  <Button
+                  style={{width:"130px", height:"30px"}}
                     onClick={
                       !status && item.status === "Sắp diễn ra"
                         ? () => handleRegister(item.id)
@@ -388,11 +386,13 @@ export default function ActivityLecturer() {
                         ? () => showFormInfo(item.id)
                         : undefined
                     }
-                    color={
+                    gradientDuoTone={
                       {
-                        "Đã duyệt": "success",
-                        "Đã xác nhận": "failure",
-                      }[status]
+                        "Chờ duyệt": "redToYellow",
+                        "Chờ xác nhận":"purpleToBlue",
+                        "Đã xác nhận": "tealToLime",
+                        "Sắp diễn ra":"cyanToBlue"
+                      }[status|| item.status]
                     }
                     className="flex justify-center"
                   >
@@ -401,12 +401,12 @@ export default function ActivityLecturer() {
                       : item.status !== "Sắp diễn ra"
                       ? "Xem"
                       : "Đăng ký"}
-                  </Badge>
-                  {(status === "Chờ duyệt" || status === "Chờ xác nhận") && (
-                    <Badge onClick={() => handleDestroy(item.id)}
-                    color="failure" className="flex justify-center">
+                  </Button>
+                  {(status === "Chờ duyệt" || (status === "Chờ xác nhận" && roleCheck ==="ADMIN")) && (
+                    <Button onClick={() => handleDestroy(item.id)} style={{width:"130px", height:"30px"}}
+                    gradientDuoTone="pinkToOrange" className="flex justify-center mt-1">
                       Hủy
-                    </Badge>
+                    </Button>
                   )}
                 </Table.Cell>
               </Table.Row>
