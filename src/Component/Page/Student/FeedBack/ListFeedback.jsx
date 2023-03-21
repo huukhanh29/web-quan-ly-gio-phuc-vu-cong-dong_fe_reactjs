@@ -67,6 +67,10 @@ export default function ListFeedback() {
   useEffect(() => {
     document.title = "Danh sách phản hồi";
     fetchData();
+    const interval = setInterval(() => {
+      fetchData();
+    }, 3000); // Định kỳ gửi yêu cầu đến server mỗi 3 giây
+    return () => clearInterval(interval);
   }, [fetchData]);
   const handlePageSizeChange = (size) => {
     setPageSize(size);

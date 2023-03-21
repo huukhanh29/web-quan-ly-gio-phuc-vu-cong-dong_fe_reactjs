@@ -1,4 +1,9 @@
-import { faEdit, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faPlus,
+  faTrash,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,6 +24,7 @@ import { setToken } from "../../../../store/authSlice";
 import Swal from "sweetalert2";
 import "./Activity.css";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 export default function ListActivity() {
   const dispatch = useDispatch();
   const activeClassname = "bg-gradient-to-r from-green-300 to-blue-400";
@@ -32,6 +38,7 @@ export default function ListActivity() {
   const [endTime, setEndTime] = useState("");
   const [type, setTypes] = useState("");
   const [activities, setActivities] = useState([]);
+  const [users, setUsers] = useState([]);
   const fetchData = useCallback(async () => {
     try {
       const { data } = await axios.get(`/activities/get/all`, {
@@ -73,6 +80,7 @@ export default function ListActivity() {
       }
     }
   }, [dispatch]);
+
   useEffect(() => {
     document.title = "Danh sách hoạt động";
     getType();
@@ -168,7 +176,54 @@ export default function ListActivity() {
       allowOutsideClick: () => !Swal.isLoading(),
     });
   };
-
+  //xem ds user
+  const showListUser = (id) => {
+    axios
+      .get(`/user/get/all`, {
+        params:{
+          activityId: id
+        }
+      })
+      .then((response) => {
+        const datas = response.data.content;
+        Swal.fire({
+          title: "Thông tin",
+          html: `
+            <div class="table-wrapper">
+              <table class="swal2-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${response.data.content
+                    .map((row) => {
+                      return `
+                        <tr>
+                          <td>${row.name}</td>
+                          <td>${row.username}</td>
+                          <td>${row.email}</td>
+                        </tr>
+                      `;
+                    })
+                    .join("")}
+                </tbody>
+              </table>
+            </div>
+          `,
+          confirmButtonText: "OK",
+          focusConfirm: false,
+          allowOutsideClick: () => !Swal.isLoading(),
+        });
+        
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   //thêm mới
   const showFormCreate = async () => {
     await getType();
@@ -538,6 +593,7 @@ export default function ListActivity() {
                 </Table.Cell>
                 <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white">
                   <Badge
+                    style={{ width: "100px" }}
                     color={
                       {
                         "Sắp diễn ra": "warning",
@@ -555,16 +611,25 @@ export default function ListActivity() {
                     <Button
                       style={{ height: "30px", width: "30px" }}
                       onClick={() => showFormEdit(item.id)}
-                      className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
+                      className="mr-1 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
                     >
                       <FontAwesomeIcon icon={faEdit} />
                     </Button>
                     <Button
                       style={{ height: "30px", width: "30px" }}
                       onClick={() => handleDelete(item.id)}
-                      className="bg-gradient-to-r from-pink-400 to-orange-500 text-white font-bold py-1 px-4 rounded"
+                      className=" mr-1 bg-gradient-to-r from-pink-400 to-orange-500 text-white font-bold py-1 px-4 rounded"
                     >
                       <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        showListUser(item.id);
+                      }}
+                      style={{ height: "30px", width: "30px" }}
+                      className="bg-gradient-to-r from-pink-400 to-orange-500 text-white font-bold py-1 px-4 rounded"
+                    >
+                      <FontAwesomeIcon icon={faUser} />
                     </Button>
                   </div>
                 </Table.Cell>

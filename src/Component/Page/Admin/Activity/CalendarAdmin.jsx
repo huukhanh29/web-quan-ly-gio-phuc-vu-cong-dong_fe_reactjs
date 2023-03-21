@@ -6,20 +6,78 @@ import { Card, Label } from "flowbite-react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { setToken } from "../../../../store/authSlice";
+import Swal from "sweetalert2";
 
 const localizer = momentLocalizer(moment);
 
 export default function CalendarAdmin() {
   const dispatch = useDispatch();
   const [events, setEvents] = useState([]);
+  const [activity, setActivity] = useState([]);
+  const handleSelectEvent = (event) => {
+    const item = activity.find((item) => item.id === event.id);
+    Swal.fire({
+      title: 'Thông tin sự kiện',
+      html: `
+        <table class="swal2-table">
+          <tr>
+            <td>Tên</td>
+            <td>${item.name}</td>
+          </tr>
+          <tr>
+            <td>Mô tả</td>
+            <td>${item.description}</td>
+          </tr>
+          <tr>
+            <td>Địa điểm</td>
+            <td>${item.location}</td>
+          </tr>
+          <tr>
+            <td>Bắt đầu</td>
+            <td> ${
+              new Date(item.startTime).toLocaleTimeString("en-GB") +
+                " " +
+                new Date(item.startTime).toLocaleDateString("en-GB") ?? ""
+            }</td>
+          </tr>
+          <tr>
+            <td>Kết thúc</td>
+            <td> ${
+              new Date(item.endTime).toLocaleTimeString("en-GB") +
+                " " +
+                new Date(item.endTime).toLocaleDateString("en-GB") ?? ""
+            }</td>
+          </tr>
+          <tr>
+            <td>Loại hoạt động</td>
+            <td>${item.activityType.name}</td>
+          </tr>
+          <tr>
+            <td>Giờ tích lũy</td>
+            <td>${item.accumulatedTime}</td>
+          </tr>
+          <tr>
+            <td>Trạng thái</td>
+            <td>${item.status}</td>
+          </tr>
+        </table>
+      `,
+      confirmButtonText: "OK",
+      focusConfirm: false,
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+ };
+  
   const fetchData = useCallback(async () => {
     try {
       const { data } = await axios.get("/activities/get/all");
+      setActivity(data.content)
       setEvents(
         data.content.map((activity) => ({
           start: activity.startTime,
           end: activity.endTime,
           title: activity.name,
+          id: activity.id
         }))
       );
     } catch (error) {
@@ -30,7 +88,7 @@ export default function CalendarAdmin() {
   }, [dispatch]);
 
   useEffect(() => {
-    document.title = "Danh sách câu hỏi";
+    document.title = "Lịch trình";
     fetchData();
   }, [fetchData]);
 
@@ -43,6 +101,7 @@ export default function CalendarAdmin() {
         views={{ month: true, agenda:true }}
         events={events}
         style={{ height: "70vh" }}
+        onSelectEvent={handleSelectEvent}
       />
     </Card>
   );

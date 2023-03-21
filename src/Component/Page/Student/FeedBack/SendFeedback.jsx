@@ -1,13 +1,16 @@
 import axios from "axios";
 import { Button, Card, Label, Textarea } from "flowbite-react";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import { setToken } from "../../../../store/authSlice";
 function SendFeedback() {
   const dispatch = useDispatch();
+  useEffect(() => {
+    document.title = "Gửi phản hồi";
+  }, []);
   const formik = useFormik({
     initialValues: {
       content: "",

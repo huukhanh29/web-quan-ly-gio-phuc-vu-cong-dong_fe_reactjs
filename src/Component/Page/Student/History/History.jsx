@@ -48,7 +48,7 @@ export default function History() {
   }, [currentPage, dispatch, pageSize, sort, searchTerm, userId]);
 
   useEffect(() => {
-    document.title = "Danh sách phản hồi";
+    document.title = "Lịch sử";
     fetchData();
   }, [fetchData]);
   const handlePageSizeChange = (size) => {

@@ -93,8 +93,12 @@ export default function ActivityLecturer() {
 
   useEffect(() => {
     document.title = "Danh sách hoạt động";
-    getActivityOfUser();
     fetchData();
+    getActivityOfUser();
+    const interval = setInterval(() => {
+      getActivityOfUser();
+    }, 3000); 
+    return () => clearInterval(interval);
   }, [fetchData, getActivityOfUser]);
   const handlePageSizeChange = (size) => {
     setPageSize(size);

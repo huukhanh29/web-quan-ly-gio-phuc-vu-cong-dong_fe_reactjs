@@ -101,7 +101,8 @@ function App() {
             {
               path: 'chartline-chat',
               element: <ChartLine />
-            }
+            },
+
           ]
         },
         {

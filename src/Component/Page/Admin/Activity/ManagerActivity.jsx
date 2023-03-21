@@ -83,9 +83,14 @@ export default function ManagerActivity() {
     }
   }, [dispatch]);
   useEffect(() => {
-    document.title = "Danh sách hoạt động";
+    document.title = "Quản lý hoạt động";
     getActivityYear();
     fetchData();
+    const interval = setInterval(() => {
+      fetchData();
+    }, 3000); 
+    return () => clearInterval(interval);
+
   }, [fetchData, getActivityYear]);
   const handelChangeYaer = (a) => {
     setCurrentYear(a);
@@ -265,7 +270,7 @@ export default function ManagerActivity() {
   ) : (
     <Card>
       <div className="flex justify-between items-center">
-        <Label className="text-xl">Danh sách hoạt động</Label>
+        <Label className="text-xl">Quản lý hoạt động</Label>
         <div className="flex items-center">
           <TextInput
             type="text"

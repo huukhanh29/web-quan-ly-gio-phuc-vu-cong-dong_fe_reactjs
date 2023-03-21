@@ -137,6 +137,7 @@ export default function MainSidebar() {
                   >
                     Quản lý User
                   </Sidebar.Item>
+                  
                   <Sidebar.Item
                     key={"chatbot"}
                     as={Link}
@@ -192,17 +193,7 @@ export default function MainSidebar() {
                   >
                     Lịch
                   </Sidebar.Item>
-                  <Sidebar.Item
-                    key={"chartline"}
-                    as={Link}
-                    to={"/admin/chartline-chat"}
-                    className={
-                      "/admin/chartline-chat" === pathname ? activeClassname : ""
-                    }
-                    icon={() => <FontAwesomeIcon icon={faLineChart} />}
-                  >
-                    Biểu đồ Chat
-                  </Sidebar.Item>
+                  
                 </>
               )}
               {role === "LECTURER" && (

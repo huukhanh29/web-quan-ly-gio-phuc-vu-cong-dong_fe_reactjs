@@ -1,42 +1,50 @@
+.table-wrapper {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 300px;
+}
 .swal2-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
-  
-  .swal2-table th,
-  .swal2-table td {
-    padding: 8px;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  .swal2-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-  }
-  
-  .swal2-table td:first-child {
-    width: 120px;
-    font-weight: bold;
-  }
-  
-  .swal2-table td:last-child {
-    font-style: italic;
-  }
-  .swal2-input[tooltip="tooltip"]:hover:after {
-    background-color: #000;
-    color: #fff;
-    padding: 5px;
-    font-size: 12px;
-    position: absolute;
-    z-index: 9999;
-    margin-top: -25px;
-    margin-left: 5px;
-    white-space: nowrap;
-  }
-  .swal2-textarea, .swal2-input, .swal2-select {
-    font-size: 14px;
-  }
-  
-  
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.swal2-table th,
+.swal2-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.swal2-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.swal2-table td:first-child {
+  width: 120px;
+  font-weight: bold;
+}
+
+.swal2-table td:last-child {
+  font-style: italic;
+}
+
+.swal2-input[tooltip="tooltip"]:hover:after {
+  background-color: #000;
+  color: #fff;
+  padding: 5px;
+  font-size: 12px;
+  position: absolute;
+  z-index: 9999;
+  margin-top: -25px;
+  margin-left: 5px;
+  white-space: nowrap;
+}
+
+.swal2-textarea,
+.swal2-input,
+.swal2-select {
+  font-size: 14px;
+}

@@ -24,7 +24,7 @@ export default function Profile() {
       if (status === 200) {
         setUsers(data);
         dispatch(setAvatar(data.avatar));
-        console.log(data)
+        console.log(data);
       }
     } catch (error) {
       if (error.response.status === 403) {
@@ -144,13 +144,12 @@ export default function Profile() {
           <option value="Nữ">Nữ</option>
         </select>
       <input type="text" style="height:50px;width:268px" id="phone" class="swal2-input" placeholder="Điện thoại"
-      value="${users.phone??""}"/>
+      value="${users.phone ?? ""}"/>
       <input type="date" id="dateOfBirth" class="swal2-input" style="height:50px;width:268px"
       value="${users.date}" style="width:270px"/>
       <textarea type="text" id="address" class="swal2-input" placeholder="Địa chỉ"
-      style="height:50px;width:268px">${users.address??""}</textarea>
-    `
-    ,
+      style="height:50px;width:268px">${users.address ?? ""}</textarea>
+    `,
       confirmButtonText: "Lưu",
       focusConfirm: false,
       allowOutsideClick: () => !Swal.isLoading(),
@@ -162,7 +161,7 @@ export default function Profile() {
         const phone = phoneInput.value.trim();
         const dateOfBirth = dateOfBirthInput.value;
         const gender = genderInput.value;
-        const address = addressInput.value
+        const address = addressInput.value;
         // Kiểm tra số điện thoại
         const phoneRegex = /^[0-9]+$/;
         if (!phoneRegex.test(phone) || phone.length < 9 || phone.length > 12) {
@@ -183,7 +182,12 @@ export default function Profile() {
           );
           return false;
         }
-        return { phone: phone, dateOfBirth: dateOfBirth , gender:gender, address:address};
+        return {
+          phone: phone,
+          dateOfBirth: dateOfBirth,
+          gender: gender,
+          address: address,
+        };
       },
     }).then((result) => {
       if (result.isConfirmed) {
@@ -205,23 +209,23 @@ export default function Profile() {
   return users === null ? (
     <Spinner color="failure" />
   ) : (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8" >
       <div className="py-8">
-        <div className="flex items-center justify-center">
-          <div className="flex-shrink-0">
+        <div className="flex items-center justify-center" >
+          <div className="flex-shrink-0" >
             <div className="relative">
-              <Avatar
-                className="shadow-md shadow-black rounded-full bg-cyan-300"
-                alt="Default avatar with alt text"
-                img={baseUrl + "files/" + users.avatar ?? ""}
-                rounded={true}
-                size="xl"
-                bordered={true}
-                color="pink"
-                onClick={handleAvatarPreview}
-                
-              />
-
+              <div className="avatar-container">
+                <Avatar
+                  className="shadow-md shadow-black rounded-full bg-cyan-300"
+                  alt="Default avatar with alt text"
+                  img={baseUrl + "files/" + users.avatar ?? ""}
+                  rounded={true}
+                  size="xl"
+                  bordered={true}
+                  color="pink"
+                  onClick={handleAvatarPreview}
+                />
+              </div>
               <input
                 id="avatar-input"
                 type="file"
@@ -237,15 +241,15 @@ export default function Profile() {
             </div>
           </div>
         </div>
-        {/* <input type="file" onChange={handleFileChange} />
-        <button onClick={handleUploadAvatar}>Upload</button> */}
         <div className="mt-6">
           <div className="max-w-3xl mx-auto bg-white overflow-hidden shadow-md rounded-lg divide-y divide-gray-200">
             <div className="px-4 py-5 sm:px-6 text-center">
               <h2 className="text-lg leading-6 font-medium text-gray-900">
                 {users.name}
               </h2>
-              <p className="mt-1 text-sm text-gray-500">{users.job ==="" ? users.role :users.job}</p>
+              <p className="mt-1 text-sm text-gray-500">
+                {users.job === "" ? users.role : users.job}
+              </p>
             </div>
             <div className="px-4 py-5 sm:p-6">
               <div className="flex">
@@ -267,7 +271,7 @@ export default function Profile() {
                 </div>
                 <div className="sm:col-span-1">
                   <dt className="font-medium text-gray-500">Giới tính</dt>
-                  <dd className="mt-1">{users.gender??""}</dd>
+                  <dd className="mt-1">{users.gender ?? ""}</dd>
                 </div>
                 <div className="sm:col-span-1">
                   <dt className="font-medium text-gray-500">Email</dt>
@@ -287,7 +291,7 @@ export default function Profile() {
                 </div>
                 <div className="sm:col-span-1">
                   <dt className="font-medium text-gray-500">Địa chỉ</dt>
-                  <dd className="mt-1">{users.address??""}</dd>
+                  <dd className="mt-1">{users.address ?? ""}</dd>
                 </div>
               </dl>
             </div>

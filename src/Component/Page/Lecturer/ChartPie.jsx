@@ -15,6 +15,7 @@ export function ChartPie() {
   const decoded = jwt_decode(token);
   const userId = decoded.id;
   useEffect(() => {
+    document.title = "Biểu đồ hoạt động";
     axios
       .get(`/user/job/chart-data/${userId}/${currentYear}`)
       .then((response) => {

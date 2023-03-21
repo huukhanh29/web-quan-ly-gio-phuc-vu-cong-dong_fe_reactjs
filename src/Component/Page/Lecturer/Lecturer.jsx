@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Carousel } from "flowbite-react";
 import jwtDecode from "jwt-decode";
 import { useDispatch, useStore } from "react-redux";
 import { logOut, setAuthorized } from "../../../store/authSlice";
@@ -29,6 +30,6 @@ export default function Lecturer() {
   };
   fetchData();
   return (
-    <></>
+    <ChartPie/>
   );
 }

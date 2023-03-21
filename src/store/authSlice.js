@@ -6,8 +6,7 @@ const initialState = {
     authorized:false,
     sidebar:true,
     avatar:null,
-    message: null,
-    check: false
+    message: null
   };
   export const authSlice = createSlice({
     name: "auth",  // Tên của slice, mỗi slice đặt 1 tên khác nhau để phân biệt
@@ -41,14 +40,12 @@ const initialState = {
       },
       setMesage:(state, action)=>{
         state.message = action.payload;
-      },
-      setCheck:(state, action)=>{
-        state.check = action.payload;
       }
+      
     }
   }
 );
-  export const { setLoginInfo, logOut, setAuthorized, setMesage,setCheck,
+  export const { setLoginInfo, logOut, setAuthorized, setMesage,setCountActivity,
     setToken, setSidebar, setAvatar } = authSlice.actions;
   export default authSlice.reducer;
 

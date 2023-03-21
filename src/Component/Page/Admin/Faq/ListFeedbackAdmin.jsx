@@ -47,6 +47,10 @@ export default function ListFeedbackAdmin() {
   useEffect(() => {
     document.title = "Danh sách phản hồi";
     fetchData();
+    const interval = setInterval(() => {
+      fetchData();
+    }, 3000); 
+    return () => clearInterval(interval);
   }, [fetchData]);
   const handlePageSizeChange = (size) => {
     setPageSize(size);
@@ -107,7 +111,7 @@ export default function ListFeedbackAdmin() {
       },
     });
   };
-  //thêm mới
+  //chi tiết
   const handleInfo = (id) => {
     const feedbackItem = feedback.find((item) => item.id === id);
     Swal.fire({
@@ -178,7 +182,7 @@ export default function ListFeedbackAdmin() {
   ) : (
     <Card>
       <div className="flex justify-between items-center">
-        <Label className="text-xl">Danh sách câu hỏi</Label>
+        <Label className="text-xl">Danh sách phản hồi</Label>
         <div className="flex items-center">
           <TextInput
             type="text"

@@ -47,6 +47,7 @@ export function ChartLine() {
   const [years, setYears] = useState([]);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   useEffect(() => {
+    document.title = "Biểu đồ chat";
     axios
       .get(`/user/chat/years`)
       .then((response) => {
@@ -63,7 +64,6 @@ export function ChartLine() {
       .get("/user/chart", { params: { year: currentYear }})
       .then((response) => response.data)
       .then((data) => {
-        console.log(data);
         const labels = data.labels;
         const values = data.data;
         setChartData({

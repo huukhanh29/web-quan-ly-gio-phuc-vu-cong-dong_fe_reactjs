@@ -1,4 +1,4 @@
-import { Avatar, Dropdown, Navbar, Spinner } from "flowbite-react";
+import { Avatar, Card, Dropdown, Navbar, Spinner } from "flowbite-react";
 import { Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
 import logoCtu from "./ctu.ico";
@@ -21,7 +21,7 @@ export default function Header() {
   const { token } = useStore().getState().auth;
   const decoded = jwt_decode(token);
   const { id } = decoded;
-  const role = decoded.role[0].authority
+  const role = decoded.role[0].authority;
   const dispatch = useDispatch();
   const { avatar, message } = useSelector((state) => state.auth);
   const [users, setUsers] = useState(null);
@@ -120,13 +120,13 @@ export default function Header() {
               alt="User settings"
               img={basUrl + "files/" + (avatar || users.avatar)}
               rounded={true}
-              status={message !== null ? "busy" : ""}
+              status={(message !== null && role!=="ADMIN") ? "busy" : ""}
               statusPosition="top-right"
             />
           }
         >
           <Dropdown.Header>
-            <span className="block text-sm">Hello {users.username}</span>
+            <span className="block text-sm">Xin chào {users.username}</span>
             <span className="block truncate text-sm font-medium">
               {users.email}
             </span>
@@ -135,13 +135,14 @@ export default function Header() {
             <Dropdown.Item
               icon={() => <FontAwesomeIcon className="mr-2" icon={faMessage} />}
             >
-              <Link className="w-full relative inline-flex items-center "
-               to={`/message`}>
-                  Thông báo
-                  <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -right-2 dark:border-gray-900">
-                    {message ??"0"}
-                  </div>
-                
+              <Link
+                className="w-full relative inline-flex items-center "
+                to={`/message`}
+              >
+                Thông báo
+                <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -right-2 dark:border-gray-900">
+                  {message ?? "0"}
+                </div>
               </Link>
             </Dropdown.Item>
           )}
@@ -168,15 +169,7 @@ export default function Header() {
         </Dropdown>
         <Navbar.Toggle />
       </div>
-      <Navbar.Collapse>
-        <Navbar.Link href="/navbars" active={true}>
-          Home
-        </Navbar.Link>
-        <Navbar.Link href="/navbars">About</Navbar.Link>
-        <Navbar.Link href="/navbars">Services</Navbar.Link>
-        <Navbar.Link href="/navbars">Pricing</Navbar.Link>
-        <Navbar.Link href="/navbars">Contact</Navbar.Link>
-      </Navbar.Collapse>
+      
     </Navbar>
   );
 }
