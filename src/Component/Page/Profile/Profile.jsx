@@ -82,7 +82,7 @@ export default function Profile() {
                     },
                   })
                   .then((res) => {
-                    //console.log(res);
+                    toast.success("Đổi ảnh đại diện thành công")
                     fetchData();
                   });
               } catch (error) {

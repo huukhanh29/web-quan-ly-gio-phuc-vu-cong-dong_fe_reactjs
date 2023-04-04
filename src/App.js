@@ -25,6 +25,7 @@ import CalendarLecturer from './Component/Page/Lecturer/CalendarLecturer';
 import { ChartLine } from './Component/Page/Admin/User/ChartLine';
 import { ChartPie } from './Component/Page/Lecturer/ChartPie';
 import Notification from './Component/Page/Notification/Notification';
+import ListLecturer from './Component/Page/Admin/User/ListLecturer';
 
 function App() {
   const router = createBrowserRouter([
@@ -79,6 +80,10 @@ function App() {
             {
               path: 'list-user',
               element: <ListUser />
+            },
+            {
+              path: 'list-lecturer',
+              element: <ListLecturer />
             },
             {
               path: 'list-feedback',

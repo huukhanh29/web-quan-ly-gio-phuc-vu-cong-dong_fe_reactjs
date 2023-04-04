@@ -1,6 +1,7 @@
 import { faStackExchange } from "@fortawesome/free-brands-svg-icons";
 import {
   faCalendar,
+  faChalkboardTeacher,
   faCheck,
   faChevronLeft,
   faChevronRight,
@@ -9,6 +10,7 @@ import {
   faPieChart,
   faReply,
   faTasks,
+  faTasksAlt,
   faUser,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
@@ -103,84 +105,120 @@ export default function MainSidebar() {
               )}
               {role === "ADMIN" && (
                 <>
-                  <Sidebar.Item
-                    key={"user"}
-                    as={Link}
-                    to={"/admin/list-user"}
-                    className={
-                      "/admin/list-user" === pathname ? activeClassname : ""
-                    }
+                  <Sidebar.Collapse
                     icon={() => <FontAwesomeIcon icon={faUsers} />}
+                    label="Quản lý người dùng"
                   >
-                    Quản lý User
-                  </Sidebar.Item>
-                  
-                  <Sidebar.Item
-                    key={"chatbot"}
-                    as={Link}
-                    to={"/admin/list-faq"}
-                    className={
-                      "/admin/list-faq" === pathname ? activeClassname : ""
-                    }
+                    <Sidebar.Item
+                      key={"user"}
+                      as={Link}
+                      to={"/admin/list-user"}
+                      className={
+                        "/admin/list-user" === pathname ? activeClassname : ""
+                      }
+                      icon={() => <FontAwesomeIcon icon={faUser} />}
+                    >
+                      Tất cả người dùng
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      key={"lecturer"}
+                      as={Link}
+                      to={"/admin/list-lecturer"}
+                      className={
+                        "/admin/list-lecturer" === pathname
+                          ? activeClassname
+                          : ""
+                      }
+                      icon={() => (
+                        <FontAwesomeIcon icon={faChalkboardTeacher} />
+                      )}
+                    >
+                      Giảng viên
+                    </Sidebar.Item>
+                  </Sidebar.Collapse>
+                  <Sidebar.Collapse
                     icon={() => <FontAwesomeIcon icon={faComments} />}
+                    label="Quản lý câu hỏi"
                   >
-                    Quản lý Chat
-                  </Sidebar.Item>
-                  <Sidebar.Item
-                    key={"feedback_admin"}
-                    as={Link}
-                    to={"/admin/list-feedback"}
-                    className={
-                      "/admin/list-feedback" === pathname ? activeClassname : ""
-                    }
-                    icon={() => <FontAwesomeIcon icon={faStackExchange} />}
-                  >
-                    Quản lý phản hồi
-                  </Sidebar.Item>
-                  <Sidebar.Item
-                    key={"activity"}
-                    as={Link}
-                    to={"/admin/list-activity"}
-                    className={
-                      "/admin/list-activity" === pathname ? activeClassname : ""
-                    }
+                    <Sidebar.Item
+                      key={"chatbot"}
+                      as={Link}
+                      to={"/admin/list-faq"}
+                      className={
+                        "/admin/list-faq" === pathname ? activeClassname : ""
+                      }
+                      icon={() => <FontAwesomeIcon icon={faComment} />}
+                    >
+                      Quản lý Chat
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      key={"feedback_admin"}
+                      as={Link}
+                      to={"/admin/list-feedback"}
+                      className={
+                        "/admin/list-feedback" === pathname
+                          ? activeClassname
+                          : ""
+                      }
+                      icon={() => <FontAwesomeIcon icon={faStackExchange} />}
+                    >
+                      Phản hồi
+                    </Sidebar.Item>
+                  </Sidebar.Collapse>
+                  <Sidebar.Collapse
                     icon={() => <FontAwesomeIcon icon={faTasks} />}
+                    label="Quản lý hoạt động"
                   >
-                    Hoạt động
-                  </Sidebar.Item>
-                  <Sidebar.Item
-                    key={"approve"}
-                    as={Link}
-                    to={"/admin/manager-activity"}
-                    className={
-                      "/admin/manager-activity" === pathname ? activeClassname : ""
-                    }
-                    icon={() => <FontAwesomeIcon icon={faCheck} />}
-                  >
-                    Phê duyệt/Xác nhận
-                  </Sidebar.Item>
-                  <Sidebar.Item
-                    key={"calendar"}
-                    as={Link}
-                    to={"/admin/calendar"}
-                    className={
-                      "/admin/calendar" === pathname ? activeClassname : ""
-                    }
-                    icon={() => <FontAwesomeIcon icon={faCalendar} />}
-                  >
-                    Lịch
-                  </Sidebar.Item>
-                  
+                    <Sidebar.Item
+                      key={"activity"}
+                      as={Link}
+                      to={"/admin/list-activity"}
+                      className={
+                        "/admin/list-activity" === pathname
+                          ? activeClassname
+                          : ""
+                      }
+                      icon={() => <FontAwesomeIcon icon={faTasksAlt} />}
+                    >
+                      Danh sách hoạt động
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      key={"approve"}
+                      as={Link}
+                      to={"/admin/manager-activity"}
+                      className={
+                        "/admin/manager-activity" === pathname
+                          ? activeClassname
+                          : ""
+                      }
+                      icon={() => <FontAwesomeIcon icon={faCheck} />}
+                    >
+                      Phê duyệt/Xác nhận
+                    </Sidebar.Item>
+                    <Sidebar.Item
+                      key={"calendar"}
+                      as={Link}
+                      to={"/admin/calendar"}
+                      className={
+                        "/admin/calendar" === pathname ? activeClassname : ""
+                      }
+                      icon={() => <FontAwesomeIcon icon={faCalendar} />}
+                    >
+                      Lịch
+                    </Sidebar.Item>
+                  </Sidebar.Collapse>
                 </>
               )}
               {role === "LECTURER" && (
                 <>
-                <Sidebar.Item
+                  <Sidebar.Item
                     key={"chartpie"}
                     as={Link}
                     to={"/lecturer/chartpie-activity"}
                     className={
-                      "/lecturer/chartpie-activity" === pathname ? activeClassname : ""
+                      "/lecturer/chartpie-activity" === pathname
+                        ? activeClassname
+                        : ""
                     }
                     icon={() => <FontAwesomeIcon icon={faPieChart} />}
                   >
@@ -191,7 +229,9 @@ export default function MainSidebar() {
                     as={Link}
                     to={"/lecturer/list-activity"}
                     className={
-                      "/lecturer/list-activity" === pathname ? activeClassname : ""
+                      "/lecturer/list-activity" === pathname
+                        ? activeClassname
+                        : ""
                     }
                     icon={() => <FontAwesomeIcon icon={faTasks} />}
                   >

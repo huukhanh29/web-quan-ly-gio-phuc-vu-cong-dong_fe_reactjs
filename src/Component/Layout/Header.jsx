@@ -24,7 +24,6 @@ export default function Header() {
   const role = decoded.role[0].authority;
   const dispatch = useDispatch();
   const { avatar, message } = useSelector((state) => state.auth);
-  const [notifications, setNotifications] = useState([]);
   const [users, setUsers] = useState(null);
   const fetchData = useCallback(async () => {
     try {
