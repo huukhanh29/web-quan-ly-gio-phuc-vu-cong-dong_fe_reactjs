@@ -1,4 +1,4 @@
-import { Avatar, Card, Dropdown, Navbar, Spinner } from "flowbite-react";
+import { Avatar, Dropdown, Navbar, Spinner } from "flowbite-react";
 import { Link } from "react-router-dom";
 import Logout from "../Auth/Logout";
 import logoCtu from "./ctu.ico";
@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
-import { setToken } from "../../store/authSlice";
+import { setMesage, setToken } from "../../store/authSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faKey,
@@ -24,6 +24,7 @@ export default function Header() {
   const role = decoded.role[0].authority;
   const dispatch = useDispatch();
   const { avatar, message } = useSelector((state) => state.auth);
+  const [notifications, setNotifications] = useState([]);
   const [users, setUsers] = useState(null);
   const fetchData = useCallback(async () => {
     try {
@@ -38,10 +39,27 @@ export default function Header() {
       }
     }
   }, [id, dispatch]);
-
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const {data} = await axios.get(`/notifications/get/${id}`);
+      const readNotifications = data.filter(
+        (item) => item.status === "Chưa đọc"
+      );
+      if (readNotifications.length > 0) {
+        dispatch(setMesage(readNotifications.length));
+      } else {
+        dispatch(setMesage(null));
+      }
+      // console.log(message)
+       //setNotifications(readNotifications);
+       setTimeout(fetchData, 15000); 
+    };
+
+    fetchData();
+  }, [id, dispatch]);
   const basUrl = "http://localhost:8070/";
   //chỉnh sửa
   const handleChangePassword = () => {

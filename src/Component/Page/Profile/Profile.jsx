@@ -24,7 +24,6 @@ export default function Profile() {
       if (status === 200) {
         setUsers(data);
         dispatch(setAvatar(data.avatar));
-        console.log(data);
       }
     } catch (error) {
       if (error.response.status === 403) {

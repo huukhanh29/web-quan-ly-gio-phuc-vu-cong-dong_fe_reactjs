@@ -521,8 +521,8 @@ export default function ListUser() {
               </Table.Cell>
               <Table.Cell className="whitespace-normal font-medium text-gray-900 dark:text-white text-center">
                 <Dropdown
-                  label={item.status === 1 ? "active" : "disable"}
-                  style={{ height: "21px", width: "80px" }}
+                  label={item.status === 1 ? "kích hoạt" : "khóa"}
+                  style={{ height: "21px", width: "120px" }}
                   gradientDuoTone={
                     item.status === 1 ? "tealToLime" : "pinkToOrange"
                   }
@@ -531,14 +531,14 @@ export default function ListUser() {
                     onClick={() => handleStatusChange(item.username, "active")}
                   >
                     <Badge color="success" className="flex justify-center">
-                      active
+                      kích hoạt
                     </Badge>
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => handleStatusChange(item.username, "disable")}
                   >
                     <Badge color="failure" className="flex justify-center">
-                      disable
+                      khóa
                     </Badge>
                   </Dropdown.Item>
                 </Dropdown>

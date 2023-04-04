@@ -45,7 +45,7 @@ const initialState = {
     }
   }
 );
-  export const { setLoginInfo, logOut, setAuthorized, setMesage,setCountActivity,
+  export const { setLoginInfo, logOut, setAuthorized, setMesage,
     setToken, setSidebar, setAvatar } = authSlice.actions;
   export default authSlice.reducer;
 

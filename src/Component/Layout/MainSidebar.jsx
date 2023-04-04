@@ -6,7 +6,6 @@ import {
   faChevronRight,
   faComment,
   faComments,
-  faLineChart,
   faPieChart,
   faReply,
   faTasks,
@@ -15,12 +14,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Sidebar } from "flowbite-react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import { useCallback, useEffect, useState } from "react";
-import { setMesage } from "../../store/authSlice";
-import axios from "axios";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 
 export default function MainSidebar() {
   const activeClassname = "bg-gradient-to-r from-green-300 to-blue-400";
@@ -28,27 +25,7 @@ export default function MainSidebar() {
   const { token } = useSelector((state) => state.auth);
   const decoded = jwt_decode(token);
   const role = decoded.role[0].authority;
-  const id = decoded.id;
   const [isSidebarHidden, setIsSidebarHidden] = useState(false);
-  const dispatch = useDispatch();
-  const [notification, setNotification] = useState([]);
-  const getNotification = useCallback(async () => {
-    try {
-      const { data } = await axios.get(`/notifications/get/${id}`);
-      const readNotifications = data.filter(
-        (item) => item.status === "Chưa đọc"
-      );
-      setNotification(readNotifications);
-    } catch (error) {}
-  }, [id]);
-  useEffect(() => {
-    if (notification.length > 0) {
-      dispatch(setMesage(notification.length));
-    } else {
-      dispatch(setMesage(null));
-    }
-    getNotification();
-  }, [getNotification, notification, dispatch]);
   const toggleSidebar = () => {
     setIsSidebarHidden(!isSidebarHidden);
   };

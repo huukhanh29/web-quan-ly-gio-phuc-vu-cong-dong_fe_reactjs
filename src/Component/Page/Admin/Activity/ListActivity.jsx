@@ -24,7 +24,6 @@ import { setToken } from "../../../../store/authSlice";
 import Swal from "sweetalert2";
 import "./Activity.css";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
 export default function ListActivity() {
   const dispatch = useDispatch();
   const activeClassname = "bg-gradient-to-r from-green-300 to-blue-400";
@@ -36,9 +35,9 @@ export default function ListActivity() {
   const [status, setStatus] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [type, setTypes] = useState("");
+  const [type, setTypes] = useState([]);
   const [activities, setActivities] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [activityType, setActivityType] = useState("");
   const fetchData = useCallback(async () => {
     try {
       const { data } = await axios.get(`/activities/get/all`, {
@@ -49,6 +48,7 @@ export default function ListActivity() {
           sortDir: sort.sortDir,
           searchTerm: searchTerm,
           status: status,
+          type: activityType,
           startTime: startTime ? startTime : null,
           endTime: endTime ? endTime : null,
         },
@@ -67,6 +67,7 @@ export default function ListActivity() {
     sort,
     searchTerm,
     status,
+    activityType,
     startTime,
     endTime,
   ]);
@@ -80,7 +81,6 @@ export default function ListActivity() {
       }
     }
   }, [dispatch]);
-
   useEffect(() => {
     document.title = "Danh sách hoạt động";
     getType();
@@ -117,10 +117,14 @@ export default function ListActivity() {
     setStatus("");
     setStartTime("");
     setEndTime("");
+    setActivityType("")
   };
   const handleStatusChange = (a) => {
     setStatus(a);
     fetchData();
+  };
+  const handleTypeChange = (a) => {
+    setActivityType(a);
   };
   //xem chi tiết
   const showFormInfo = (id) => {
@@ -185,7 +189,6 @@ export default function ListActivity() {
         }
       })
       .then((response) => {
-        const datas = response.data.content;
         Swal.fire({
           title: "Thông tin",
           html: `
@@ -521,6 +524,21 @@ export default function ListActivity() {
       </div>
       <div className="flex justify-center items-center">
         <div className="flex flex-wrap ">
+        <Badge color="info">Loại hoạt động: </Badge>
+          <Dropdown
+            label={activityType === "" ? "Tất cả" : activityType}
+            style={{ height: "21px", width: "150px" }}
+            color="greenToBlue"
+          >
+            <Dropdown.Item onClick={() => handleTypeChange("")}>
+              Tất cả
+            </Dropdown.Item>
+            {type.map((item) => (
+            <Dropdown.Item key={item.id} value={item.name} onClick={() => handleTypeChange(item.name)}>
+              {item.name}
+            </Dropdown.Item>
+          ))}
+          </Dropdown>
           <Badge color="warning">Trạng thái:</Badge>
           <Dropdown
             label={status === "" ? "Tất cả" : status}
