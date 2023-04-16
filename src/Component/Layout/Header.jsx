@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
-import { setMesage, setToken } from "../../store/authSlice";
+import { setAvatar, setMesage, setToken } from "../../store/authSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faKey,
@@ -30,6 +30,7 @@ export default function Header() {
       const { data, status } = await axios.get(`/user/get/${id}`);
       if (status === 200) {
         setUsers(data);
+        dispatch(setAvatar(data.avatar));
       }
     } catch (error) {
       if (error.response === 403) {
@@ -60,7 +61,7 @@ export default function Header() {
     fetchData();
   }, [id, dispatch]);
   const basUrl = "http://localhost:8070/";
-  //chỉnh sửa
+  //đổi mật khẩu
   const handleChangePassword = () => {
     Swal.fire({
       title: "Đổi mật khẩu",
@@ -103,10 +104,11 @@ export default function Header() {
             // Reload the user data after changing password
             fetchData();
             dispatch(setToken(response.data.token));
-            console(response);
+            console.log(response);
             toast.success("Đổi mật khẩu thành công");
           })
           .catch((error) => {
+            console.log(error);
             if (error.response.data.message === "NOTMATCH") {
               //oldPasswordInput.classList.add("swal2-inputerror");
               Swal.showValidationMessage(`Mật khẩu cũ không đúng`);

@@ -405,7 +405,7 @@ export default function ListActivity() {
           })
           .catch((error) => {
             console.log(error);
-            toast.error("Có lỗi xảy ra khi thêm hoạt động");
+            toast.error("Có lỗi xảy ra khi chỉnh sữa hoạt động");
           });
       },
     });
@@ -527,7 +527,7 @@ export default function ListActivity() {
         <Badge color="info">Loại hoạt động: </Badge>
           <Dropdown
             label={activityType === "" ? "Tất cả" : activityType}
-            style={{ height: "21px", width: "150px" }}
+            style={{ height: "21px", width: "410px" }}
             color="greenToBlue"
           >
             <Dropdown.Item onClick={() => handleTypeChange("")}>

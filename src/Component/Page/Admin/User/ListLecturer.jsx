@@ -30,6 +30,8 @@ export default function ListLecturer() {
   const [searchTerm, setSearchTerm] = useState("");
   const role = "LECTURER";
   const [jobs, setJobs] = useState([]);
+  const [years, setYears] = useState([]);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const fetchData = useCallback(async () => {
     try {
       const { data } = await axios.get(
@@ -47,7 +49,16 @@ export default function ListLecturer() {
     try {
       const { data } = await axios.get(`/user/job/get/all`);
       setJobs(data);
-      console.log(data);
+    } catch (error) {
+      if (error.response.status === 403) {
+        dispatch(setToken(""));
+      }
+    }
+  }, [dispatch]);
+  const getActivityYear = useCallback(async () => {
+    try {
+      const { data } = await axios.get(`/activities/get/years`);
+      setYears(data);
     } catch (error) {
       if (error.response.status === 403) {
         dispatch(setToken(""));
@@ -56,9 +67,13 @@ export default function ListLecturer() {
   }, [dispatch]);
   useEffect(() => {
     document.title = "Danh sách người dùng";
+    getActivityYear()
     fetchData();
     getJob();
-  }, [fetchData, getJob]);
+  }, [fetchData, getJob, getActivityYear]);
+  const handelChangeYaer = (a) => {
+    setCurrentYear(a);
+  };
   const handlePageSizeChange = (size) => {
     setPageSize(size);
     setCurrentPage(0);
@@ -106,8 +121,12 @@ export default function ListLecturer() {
   //xem ds hoạt động
   const showListActivity = (id) => {
     axios
-      .get(`/activities/manager/users/${id}/activities`)
+      .get(`/activities/manager/users/${id}`)
       .then((response) => {
+        const activities = response.data.filter((item) =>
+        new Date(item.endTime).getFullYear().toString() === currentYear.toString()
+      );
+      console.log(activities);
         Swal.fire({
           title: "Danh sách hoạt động",
           html: `
@@ -119,7 +138,7 @@ export default function ListLecturer() {
                     </tr>
                   </thead>
                   <tbody>
-                    ${response.data
+                    ${activities
                       .map((row) => {
                         return `
                           <tr>
@@ -284,6 +303,22 @@ export default function ListLecturer() {
             <Dropdown.Item onClick={() => handlePageSizeChange(20)}>
               20
             </Dropdown.Item>
+          </Dropdown>
+          <Badge color="white">Năm:</Badge>
+          <Dropdown
+            label={currentYear}
+            style={{ height: "21px", width: "60px" }}
+            color="white"
+          >
+            {years.map((year) => (
+              <Dropdown.Item
+                key={year}
+                value={year}
+                onClick={() => handelChangeYaer(year)}
+              >
+                {year}
+              </Dropdown.Item>
+            ))}
           </Dropdown>
         </div>
       </div>

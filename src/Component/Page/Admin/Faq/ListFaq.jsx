@@ -86,10 +86,10 @@ export default function ListFaq() {
           Swal.showValidationMessage(`Please enter question and answer`);
         }
         const existingQuestion = faq.find((item) => item.question === question);
-        if (existingQuestion) {
-          Swal.showValidationMessage("Câu hỏi đã tồn tại");
-          return false;
-        }
+        // if (existingQuestion) {
+        //   Swal.showValidationMessage("Câu hỏi đã tồn tại");
+        //   return false;
+        // }
         return { question: question, answer: answer };
       },
     }).then((result) => {
