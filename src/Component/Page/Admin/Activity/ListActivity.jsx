@@ -190,7 +190,7 @@ export default function ListActivity() {
       })
       .then((response) => {
         Swal.fire({
-          title: "Danh sách người dùng tham gia",
+          title: "Danh sách giảng viên tham gia",
           html: `
             <div class="table-wrapper">
               <table class="swal2-table">

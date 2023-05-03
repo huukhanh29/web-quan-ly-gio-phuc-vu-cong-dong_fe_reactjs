@@ -270,6 +270,7 @@ export default function ListUser() {
           })
           .catch((error) => {
             if (error.response.data.message === "ERROR: EMAIL WAS USED") {
+              console.log(error)
               Swal.showValidationMessage("Email đã tồn tại");
             } else if (
               error.response.data.message === "ERROR: USERNAME WAS USED"

@@ -492,7 +492,7 @@ export default function ManagerActivity() {
                       className="flex justify-center"
                       gradientDuoTone="tealToLime"
                     >
-                      Xong
+                      Hoàn thành
                     </Button>
                   )}
                   {(item.status === "Chờ duyệt" ||
