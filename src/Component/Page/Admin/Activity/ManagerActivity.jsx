@@ -370,15 +370,15 @@ export default function ManagerActivity() {
               Tất cả
             </Dropdown.Item>
             <Dropdown.Item onClick={() => handleConditionChange("Chờ duyệt")}>
-              Duyệt
+              Chờ duyệt
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => handleConditionChange("Chờ xác nhận")}
             >
-              Xác nhận
+              Chờ xác nhận
             </Dropdown.Item>
             <Dropdown.Item onClick={() => handleConditionChange("Đã xác nhận")}>
-              Hoàn thành
+            Đã xác nhận
             </Dropdown.Item>
           </Dropdown>
 

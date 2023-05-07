@@ -68,12 +68,12 @@ export default function History() {
     setSearchTerm(event.target.value);
     fetchData();
   };
-  const handleRefresh = () => {
-    setSearchTerm("");
-    setSort({ sortBy: "id", sortDir: "ASC" });
-    setPageSize(10);
-    setCurrentPage(0);
-  };
+  // const handleRefresh = () => {
+  //   setSearchTerm("");
+  //   setSort({ sortBy: "id", sortDir: "DESC" });
+  //   setPageSize(10);
+  //   setCurrentPage(0);
+  // };
   const showFormInfo = (id) => {
     const item = history.find((item) => item.id === id);
     Swal.fire({
@@ -104,7 +104,7 @@ export default function History() {
           <Button
             className={activeClassname}
             style={{ height: "30px" }}
-            onClick={() => handleSortChange("id","ASC")}
+            onClick={() => handleSortChange("createdAt","DESC")}
           >
             Tìm kiếm
           </Button>
@@ -112,16 +112,8 @@ export default function History() {
       </div>
       <div className="flex justify-center items-center">
       <div className="flex flex-wrap gap-2 ml-9">
-      <Badge color="white">Chế độ sắp xếp:</Badge>
-          <Badge onClick={() => handleRefresh()} color="failure">
-            Làm mới
-          </Badge>
-        <Badge onClick={() => handleSortChange("id","ASC")} color="info">
-          Mã số
-        </Badge>
-        <Badge onClick={() => handleSortChange("createdAt", "DESC")} color="warning">
-          Ngày tạo
-        </Badge>
+      <Badge color="white">Số lượng hàng:</Badge>
+          
         <Dropdown label={pageSize} style={{ height: "21px", width : "50px" }} color="greenToBlue">
           <Dropdown.Item onClick={() => handlePageSizeChange(5)}>
             5

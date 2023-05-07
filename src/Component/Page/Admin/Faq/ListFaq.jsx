@@ -85,7 +85,7 @@ export default function ListFaq() {
         if (!question || !answer) {
           Swal.showValidationMessage(`Please enter question and answer`);
         }
-        const existingQuestion = faq.find((item) => item.question === question);
+        //const existingQuestion = faq.find((item) => item.question === question);
         // if (existingQuestion) {
         //   Swal.showValidationMessage("Câu hỏi đã tồn tại");
         //   return false;
@@ -122,7 +122,7 @@ export default function ListFaq() {
         const question = Swal.getPopup().querySelector("#question").value;
         const answer = Swal.getPopup().querySelector("#answer").value;
         if (!question || !answer) {
-          Swal.showValidationMessage("Vui lòng nhập câu hỏi và trả lời");
+          Swal.showValidationMessage("Vui lòng nhập câu hỏi và trả lờiz");
           return false;
         }
         const newData = { question, answer };
@@ -180,7 +180,8 @@ export default function ListFaq() {
     Swal.fire({
       title: "Thông tin",
       html: `<textarea type="text" id="question" class="swal2-textarea form-textarea " placeholder="Question" disabled>${item.question}</textarea>
-      <textarea type="text" id="answer" class="swal2-textarea form-textarea" placeholder="Answer" disabled>${item.answer}</textarea>`,
+      <textarea type="text" id="answer" class="swal2-textarea form-textarea" placeholder="Answer" disabled>${item.answer}</textarea>
+      <p>Số lượt hỏi: ${item.uniqueHistoryCount}</p>`,
       confirmButtonText: "OK",
       focusConfirm: false,
       allowOutsideClick: () => !Swal.isLoading(),

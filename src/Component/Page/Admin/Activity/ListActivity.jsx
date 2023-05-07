@@ -117,7 +117,7 @@ export default function ListActivity() {
     setStatus("");
     setStartTime("");
     setEndTime("");
-    setActivityType("")
+    setActivityType("");
   };
   const handleStatusChange = (a) => {
     setStatus(a);
@@ -184,9 +184,9 @@ export default function ListActivity() {
   const showListUser = (id) => {
     axios
       .get(`/user/get/all`, {
-        params:{
-          activityId: id
-        }
+        params: {
+          activityId: id,
+        },
       })
       .then((response) => {
         Swal.fire({
@@ -221,7 +221,6 @@ export default function ListActivity() {
           focusConfirm: false,
           allowOutsideClick: () => !Swal.isLoading(),
         });
-        
       })
       .catch((error) => {
         console.log(error);
@@ -268,7 +267,7 @@ export default function ListActivity() {
         const s = new Date(startTime);
         const e = new Date(endTime);
         console.log(s);
-        if (!name || !location || !accumulatedTime) {
+        if (!name || !location || !accumulatedTime || !startTime || !endTime) {
           Swal.showValidationMessage("Vui lòng nhập đủ thông tin");
           return false;
         }
@@ -524,7 +523,7 @@ export default function ListActivity() {
       </div>
       <div className="flex justify-center items-center">
         <div className="flex flex-wrap ">
-        <Badge color="info">Loại hoạt động: </Badge>
+          <Badge color="info">Loại hoạt động: </Badge>
           <Dropdown
             label={activityType === "" ? "Tất cả" : activityType}
             style={{ height: "21px", width: "410px" }}
@@ -534,10 +533,14 @@ export default function ListActivity() {
               Tất cả
             </Dropdown.Item>
             {type.map((item) => (
-            <Dropdown.Item key={item.id} value={item.name} onClick={() => handleTypeChange(item.name)}>
-              {item.name}
-            </Dropdown.Item>
-          ))}
+              <Dropdown.Item
+                key={item.id}
+                value={item.name}
+                onClick={() => handleTypeChange(item.name)}
+              >
+                {item.name}
+              </Dropdown.Item>
+            ))}
           </Dropdown>
           <Badge color="warning">Trạng thái:</Badge>
           <Dropdown

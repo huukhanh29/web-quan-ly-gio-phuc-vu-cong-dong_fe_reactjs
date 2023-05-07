@@ -1,4 +1,4 @@
-import { faEdit, faInfo, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faInfo, faReply, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import {
@@ -82,8 +82,8 @@ export default function ListFeedbackAdmin() {
       title: "Trả lời phản hồi",
       html: `
       <textarea type="text" id="name" class="swal2-textarea form-textarea" style="height:80px" disabled>${feedbackItem.content}</textarea>
-      <textarea type="text" id="question" class="swal2-textarea form-textarea " style="height:80px" placeholder="Question"></textarea>
-      <textarea type="text" id="answer" class="swal2-textarea form-textarea" style="height:80px" placeholder="Answer"></textarea>`,
+      <textarea type="text" id="question" class="swal2-textarea form-textarea " style="height:80px" placeholder="Từ khóa"></textarea>
+      <textarea type="text" id="answer" class="swal2-textarea form-textarea" style="height:80px" placeholder="Trả lời"></textarea>`,
       focusConfirm: false,
       preConfirm: () => {
         const question = Swal.getPopup().querySelector("#question").value;
@@ -127,7 +127,7 @@ export default function ListFeedbackAdmin() {
   //xóa
   const handleDelete = (id) => {
     Swal.fire({
-      title: "Bạn có chắc chắn muốn xóa câu hỏi này?",
+      title: "Bạn có chắc chắn muốn xóa phản hồi này?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc3545",
@@ -153,7 +153,7 @@ export default function ListFeedbackAdmin() {
   //xóa tất cả
   const handleDeleteAll = () => {
     Swal.fire({
-      title: "Bạn có chắc chắn muốn xóa tất cả?",
+      title: "Bạn chắc chắn muốn xóa tất cả phản hồi đã trả lời?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc3545",
@@ -284,7 +284,7 @@ export default function ListFeedbackAdmin() {
                       onClick={() => showFormCreate(item.id)}
                       className="mr-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold py-1 px-4 rounded"
                     >
-                      <FontAwesomeIcon icon={faEdit} />
+                      <FontAwesomeIcon icon={faReply} />
                     </Button>
                   ) : (
                     <Button

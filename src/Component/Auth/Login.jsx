@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import * as Yup from "yup";
 import { setAuthorized, setLoginInfo } from "../../store/authSlice";
+import { useEffect } from "react";
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -17,9 +18,7 @@ function Login() {
     },
     validationSchema: Yup.object({
       username: Yup.string()
-        .min(4, "Tên người dùng phải nhiều hơn 4 kí tự")
-        .max(50, "Tên người dùng phải ít hơn 8 kí tự")
-        .required("Không được để trống trường này"),
+        .required("Chưa nhập username/email"),
       password: Yup.string().required("Chưa nhập mật khẩu"),
     }),
     onSubmit: (data) => {
@@ -79,7 +78,9 @@ function Login() {
         });
     },
   });
-
+  useEffect(() => {
+    document.title = "Đăng nhập";
+  }, []);
   return (
     <div className="flex justify-center h-screen min-w-min">
       <div className="w-full mt-20 sm:w-1/2 lg:w-1/3">
@@ -96,14 +97,13 @@ function Login() {
               <TextInput
                 id="username"
                 type="text"
-                placeholder="Username"
                 required={true}
                 value={formik.values.username}
                 onChange={formik.handleChange}
               />
               {formik.errors.username && (
                 <p
-                  style={{ textAlign: "left" }}
+                  style={{ textAlign: "left", color:"red" }}
                   className="text-danger text-left"
                 >
                   {formik.errors.username}
@@ -124,7 +124,7 @@ function Login() {
               />
               {formik.errors.password && (
                 <p
-                  style={{ textAlign: "left" }}
+                  style={{ textAlign: "left", color:"red" }}
                   className="text-danger text-left"
                 >
                   {formik.errors.password}

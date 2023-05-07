@@ -138,7 +138,7 @@ export default function MainSidebar() {
                   </Sidebar.Collapse>
                   <Sidebar.Collapse
                     icon={() => <FontAwesomeIcon icon={faComments} />}
-                    label="Quản lý câu hỏi"
+                    label="Quản lý Chatbot"
                   >
                     <Sidebar.Item
                       key={"chatbot"}
@@ -149,7 +149,7 @@ export default function MainSidebar() {
                       }
                       icon={() => <FontAwesomeIcon icon={faComment} />}
                     >
-                      Quản lý Chat
+                      Quản lý câu hỏi
                     </Sidebar.Item>
                     <Sidebar.Item
                       key={"feedback_admin"}
@@ -162,7 +162,7 @@ export default function MainSidebar() {
                       }
                       icon={() => <FontAwesomeIcon icon={faStackExchange} />}
                     >
-                      Phản hồi
+                      Quản lý phản hồi
                     </Sidebar.Item>
                   </Sidebar.Collapse>
                   <Sidebar.Collapse

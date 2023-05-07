@@ -48,7 +48,7 @@ export default function Profile() {
       const image = new Image();
       image.src = reader.result;
       Swal.fire({
-        title: "SweetAlert2 + cropperjs",
+        title: "Thay đổi ảnh đại diện",
         html: `<div class="swal-container"> <img id="preview" src="${reader.result}"> </div> <img id="cropperjs" src="${reader.result}">`,
         didOpen: () => {
           const image = Swal.getPopup().querySelector("#cropperjs");
