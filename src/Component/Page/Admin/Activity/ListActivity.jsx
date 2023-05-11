@@ -376,6 +376,10 @@ export default function ListActivity() {
           Swal.showValidationMessage("Vui lòng nhập đủ thông tin");
           return false;
         }
+        if (s < now) {
+          Swal.showValidationMessage("Thời gian bắt đầu phải sau hiện tại");
+          return false;
+        }
         if (s >= e) {
           Swal.showValidationMessage(
             "Thời gian kết thúc phải sau thời gian bắt đầu"

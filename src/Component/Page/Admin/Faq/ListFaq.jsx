@@ -225,9 +225,6 @@ export default function ListFaq() {
           <Badge onClick={() => handleRefresh("id")} color="failure">
             Làm mới
           </Badge>
-          <Badge onClick={() => handleSortChange("id", "ASC")} color="info">
-            Mã số
-          </Badge>
           <Badge
             onClick={() => handleSortChange("createdAt", "DESC")}
             color="warning"
